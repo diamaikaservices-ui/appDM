@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVRAISON DIA MAIKA</title>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#eef2f7,#f9fbff);margin:0;padding:15px;}
+.logo-container{text-align:center;margin-bottom:10px}
+.logo{width:140px;max-width:60%}
+.main-title{text-align:center;font-size:26px;font-weight:700;margin-bottom:20px;}
+.card{background:white;padding:18px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.08);margin-bottom:20px;}
+.field{margin-bottom:18px}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
+.phone-group{display:flex;align-items:center;margin-top:5px;gap:5px}
+.phone-prefix{background:#e9ecef;padding:10px 12px;border-radius:10px 0 0 10px;border:1px solid #ddd;font-size:14px;white-space:nowrap;}
+.phone-group input{border-radius:0 10px 10px 0;border-left:none;flex:1;}
+input{width:100%;padding:11px;border-radius:10px;border:1px solid #ddd;font-size:14px;}
+input:focus{border-color:#0d6efd;outline:none}
+.error-border{border:2px solid #dc3545 !important}
+.error-message{font-size:11px;color:#dc3545;margin-top:4px;}
+.required-note{font-size:13px;font-weight:600;color:#dc3545;margin-bottom:8px;}
+.table-container{overflow:hidden;}
+table{width:100%;border-collapse:collapse;background:white;}
+thead th{background:#0d6efd;color:white;padding:10px;font-size:13px;}
+th,td{border:1px solid #eee;padding:8px;vertical-align:top;font-size:13px;}
+td[contenteditable]{background:#fdfdfd}
+.number-cell{background:#f1f3f5;font-weight:bold;text-align:center}
+.btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;margin-top:15px;cursor:pointer;}
+.add{background:#198754;color:white}
+.send{background:#0d6efd;color:white}
+.delete{background:#dc3545;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
+
+@media (max-width:768px){
+table, thead, tbody, th, td, tr {display:block;width:100%;}
+thead{display:none;}
+tr{background:white;margin-bottom:15px;border-radius:14px;box-shadow:0 6px 15px rgba(0,0,0,0.06);padding:10px;}
+td{border:none;border-bottom:1px solid #eee;padding:8px 6px;position:relative;padding-left:45%;min-height:38px;}
+td:last-child{border-bottom:none;}
+td:before{position:absolute;left:10px;top:8px;font-weight:600;font-size:12px;color:#0d6efd;}
+td:nth-of-type(1):before{content:"N°";}
+td:nth-of-type(2):before{content:"Date";}
+td:nth-of-type(3):before{content:"Nom client";}
+td:nth-of-type(4):before{content:"Contact client";}
+td:nth-of-type(5):before{content:"Lieu livraison (Précis)";}
+td:nth-of-type(6):before{content:"Article";}
+td:nth-of-type(7):before{content:"Prix colis + livraison (Ar)";}
+td:nth-of-type(8):before{content:"Remarque";}
+td:nth-of-type(9):before{content:"Action";}
+.number-cell{background:transparent;text-align:left;font-weight:bold;}
+}
+
+/* POPUP */
+.modal-overlay{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.4);
+display:flex;align-items:center;justify-content:center;
+z-index:9999;animation:fadeIn .2s ease;
+}
+.modal{
+background:white;padding:20px;border-radius:18px;
+width:90%;max-width:350px;text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+animation:scaleIn .2s ease;
+}
+.modal h4{margin-top:0;margin-bottom:10px;}
+.modal p{font-size:14px;margin-bottom:20px;}
+.modal button{
+padding:10px 14px;border:none;border-radius:10px;
+margin:5px;cursor:pointer;font-weight:600;
+}
+.modal .confirm{background:#0d6efd;color:white}
+.modal .cancel{background:#6c757d;color:white}
+.modal .ok{background:#198754;color:white}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{transform:scale(.8)}to{transform:scale(1)}}
+</style>
+</head>
+
+<body>
+
+<div class="logo-container">
+<img src="logo.jpg" class="logo">
+</div>
+
+<div class="main-title">LIVRAISON DIA MAIKA</div>
+
+<div class="card">
+<h3>Pour la récupération</h3>
+
+<div class="field">
+<label>Nom du responsable</label>
+<input type="text" id="nomResp">
+</div>
+
+<div class="field">
+<label>Contact du responsable *</label>
+<div id="contactContainer">
+<div class="phone-group contact-item">
+<div class="phone-prefix">🇲🇬 +261</div>
+<input type="text" class="contactResp" placeholder="032 12 345 67">
+<button type="button" class="delete" onclick="removeContact(this)">🗑</button>
+</div>
+</div>
+<button type="button" class="add" style="margin-top:8px;padding:8px 12px;font-size:13px" onclick="addContact()">+ Ajouter numéro</button>
+<div class="error-message" id="errContactResp"></div>
+</div>
+
+<div class="field">
+<label>Lieu de récupération *</label>
+<input type="text" id="lieuRecup">
+<div class="error-message" id="errLieuRecup"></div>
+</div>
+
+<div class="field">
+<label>Page Facebook (optionnel)</label>
+<input type="text" id="pageFacebook" placeholder="https://facebook.com/nompage">
+</div>
+
+</div>
+
+<h3 id="tableTitle"></h3>
+<div class="required-note">* : Champs obligatoires</div>
+
+<div class="table-container">
+<table id="livraisonTable">
+<thead>
+<tr>
+<th>N°</th>
+<th>Date</th>
+<th>Nom du client</th>
+<th>Contact du client *</th>
+<th>Lieu de livraison (Précis) *</th>
+<th>Article</th>
+<th>Prix du colis + livraison (Ar) *</th>
+<th>Remarque</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<button class="btn add" onclick="addRow()">Ajouter une ligne</button>
+<button class="btn send" onclick="submitForm()">Envoyer</button>
+
+<script>
+
+const today=new Date();
+today.setDate(today.getDate()+1);
+const formattedDate=today.toLocaleDateString();
+document.getElementById("tableTitle").textContent="Livraison du "+formattedDate;
+
+function formatPhone(value){value=value.replace(/\D/g,'');if(value.length>10)value=value.slice(0,10);return value.replace(/(\d{3})(\d{2})(\d{3})(\d{2})/,'$1 $2 $3 $4');}
+function validateSingleContact(v){return /^(032|033|034|037|038)\d{7}$/.test(v.replace(/\s/g,''));}
+function attachPhoneFormatting(input){input.addEventListener("input",function(){this.value=formatPhone(this.value);});input.addEventListener("blur",validateTopFields);}
+document.querySelectorAll(".contactResp").forEach(i=>attachPhoneFormatting(i));
+
+function addContact(){
+const container=document.getElementById("contactContainer");
+const div=document.createElement("div");
+div.className="phone-group contact-item";
+div.style.marginTop="8px";
+div.innerHTML=`<div class="phone-prefix">🇲🇬 +261</div>
+<input type="text" class="contactResp" placeholder="032 12 345 67">
+<button type="button" class="delete" onclick="removeContact(this)">🗑</button>`;
+container.appendChild(div);
+attachPhoneFormatting(div.querySelector("input"));
+}
+
+function removeContact(btn){
+const container=document.getElementById("contactContainer");
+if(container.children.length===1){showAlert("Au moins un numéro est obligatoire.");return;}
+btn.parentElement.remove();validateTopFields();
+}
+
+document.getElementById("lieuRecup").addEventListener("blur",validateTopFields);
+
+function validateTopFields(){
+let valid=true;let contacts=document.querySelectorAll(".contactResp");let atLeastOne=false;
+contacts.forEach(input=>{if(validateSingleContact(input.value)){input.classList.remove("error-border");atLeastOne=true;}else{input.classList.add("error-border");}});
+if(!atLeastOne){document.getElementById("errContactResp").textContent="Au moins un numéro valide est requis";valid=false;}else{document.getElementById("errContactResp").textContent="";}
+let lieu=document.getElementById("lieuRecup");
+if(lieu.value.trim()===""){lieu.classList.add("error-border");document.getElementById("errLieuRecup").textContent="Champ obligatoire";valid=false;}
+else{lieu.classList.remove("error-border");document.getElementById("errLieuRecup").textContent="";}
+return valid;
+}
+
+function addRow(){
+const tbody=document.querySelector("#livraisonTable tbody");
+const row=tbody.insertRow();
+row.insertCell(0).className="number-cell";
+row.insertCell(1).textContent=formattedDate;
+
+for(let i=2;i<=7;i++){
+let cell=row.insertCell(i);
+cell.contentEditable=true;
+
+if(i===6){
+cell.addEventListener("input",function(){
+let raw=this.textContent.replace(/\D/g,'');
+if(raw===""){this.textContent="";return;}
+let value=parseInt(raw);
+if(value<0)value=0;
+if(value>1010000)value=1010000;
+this.textContent=value.toLocaleString('fr-FR');
+placeCaretAtEnd(this);
+});
+}
+
+cell.addEventListener("blur",()=>validateCell(cell,i));
+}
+
+const action=row.insertCell(8);
+const btn=document.createElement("button");
+btn.innerHTML="🗑";btn.className="delete";
+btn.onclick=()=>{
+if(tbody.rows.length===1){showAlert("Impossible de supprimer la dernière ligne.");return;}
+tbody.removeChild(row);updateNumbers();
+};
+action.appendChild(btn);
+
+updateNumbers();
+}
+
+function placeCaretAtEnd(el){el.focus();const range=document.createRange();range.selectNodeContents(el);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
+function validateCell(cell,index){
+cell.classList.remove("error-border");
+let value=cell.textContent.trim();
+
+if(index===3&&value==="")cell.classList.add("error-border");
+if(index===4&&value==="")cell.classList.add("error-border");
+
+if(index===6){
+let raw=value.replace(/\D/g,'');
+if(raw===""){cell.classList.add("error-border");}
+else{
+let num=parseInt(raw);
+if(num<0||num>1010000){cell.classList.add("error-border");}
+else{cell.textContent=num.toLocaleString('fr-FR');}
+}}
+}
+
+function updateNumbers(){
+document.querySelectorAll("#livraisonTable tbody tr").forEach((row,i)=>{row.cells[0].textContent=i+1;});
+}
+
+function validateTable(){
+let valid=true;
+document.querySelectorAll("#livraisonTable tbody tr").forEach(row=>{
+[3,4,6].forEach(i=>{
+validateCell(row.cells[i],i);
+if(row.cells[i].classList.contains("error-border"))valid=false;
+});
+});
+return valid;
+}
+
+function buildPayload(){
+const contacts=Array.from(document.querySelectorAll(".contactResp")).map(i=>i.value.trim()).filter(v=>validateSingleContact(v));
+const rows=document.querySelectorAll("#livraisonTable tbody tr");
+let livraisons=[];
+
+rows.forEach(row=>{
+livraisons.push({
+nomClient:row.cells[2].textContent.trim(),
+contactClient:row.cells[3].textContent.trim(),
+lieuLivraison:row.cells[4].textContent.trim(),
+article:row.cells[5].textContent.trim(),
+prix:row.cells[6].textContent.trim().replace(/\s/g,''),
+remarque:row.cells[7].textContent.trim()
+});
+});
+
+return {
+dateLivraison:formattedDate,
+nomResponsable:document.getElementById("nomResp").value.trim(),
+contactResponsable:contacts.join(" / "),
+lieuRecuperation:document.getElementById("lieuRecup").value.trim(),
+pageFacebook:document.getElementById("pageFacebook").value.trim(),
+livraisons:livraisons
+};
+}
+
+function showAlert(message){
+return new Promise(resolve=>{
+const overlay=document.createElement("div");
+overlay.className="modal-overlay";
+overlay.innerHTML=`<div class="modal">
+<h4>Information</h4>
+<p>${message}</p>
+<button class="ok">OK</button>
+</div>`;
+document.body.appendChild(overlay);
+overlay.querySelector(".ok").onclick=()=>{overlay.remove();resolve();};
+});
+}
+
+function showConfirm(message){
+return new Promise(resolve=>{
+const overlay=document.createElement("div");
+overlay.className="modal-overlay";
+overlay.innerHTML=`<div class="modal">
+<h4>Confirmation</h4>
+<p>${message}</p>
+<button class="confirm">Oui</button>
+<button class="cancel">Annuler</button>
+</div>`;
+document.body.appendChild(overlay);
+overlay.querySelector(".confirm").onclick=()=>{overlay.remove();resolve(true);};
+overlay.querySelector(".cancel").onclick=()=>{overlay.remove();resolve(false);};
+});
+}
+
+let isSubmitting=false;
+const sendBtn=document.querySelector(".btn.send");
+
+async function submitForm(){
+if(isSubmitting) return;
+
+let validTop=validateTopFields();
+let validTable=validateTable();
+
+if(!validTop||!validTable){
+await showAlert("Veuillez corriger les erreurs ❌");
+return;
+}
+
+const confirmation=await showConfirm("Êtes-vous sûr de vouloir envoyer ces données ?");
+if(!confirmation) return;
+
+isSubmitting=true;
+sendBtn.disabled=true;
+sendBtn.textContent="Envoi en cours…";
+
+try{
+const payload=buildPayload();
+
+const res=await fetch("https://script.google.com/macros/s/AKfycbwwyDRv4jgbzjGmU8rF8aVlq00FftB3j3dO1wCVhVhdO-ADFIx31bBCFwTgVoCmKuuO/exec",
+{method:"POST",body:JSON.stringify(payload)});
+
+const response=await res.json();
+
+if(response.result==="success"){
+await showAlert("Données envoyées ✅");
+resetForm();
+}else{
+await showAlert("Erreur lors de l'envoi ❌");
+}
+
+}catch(e){
+await showAlert("Erreur connexion ❌");
+}
+
+isSubmitting=false;
+sendBtn.disabled=false;
+sendBtn.textContent="Envoyer";
+}
+
+window.onload=function(){addRow();}
+
+function resetForm(){
+document.getElementById("nomResp").value="";
+document.getElementById("lieuRecup").value="";
+document.getElementById("pageFacebook").value="";
+location.reload();
+}
+
+// Ity ilay lien (Mameno formulaire direct)
+function getParam(param){
+const params = new URLSearchParams(window.location.search);
+return params.get(param);
+}
+
+window.addEventListener("load", function(){
+
+const nom = getParam("nom");
+
+if(nom){
+document.getElementById("nomResp").value = decodeURIComponent(nom);
+}
+
+});
+
+// Manakana ny fanovana ny "Nom du responsable"
+window.addEventListener("load", function(){
+
+const nomResp = document.getElementById("nomResp");
+
+if(nomResp){
+
+// Atao readonly
+nomResp.setAttribute("readonly", true);
+
+// Style mba ho hita fa tsy azo ovaina
+nomResp.style.background = "#e9ecef";
+nomResp.style.cursor = "not-allowed";
+
+// Manakana keyboard
+nomResp.addEventListener("keydown", function(e){
+e.preventDefault();
+});
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
