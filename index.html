@@ -76,6 +76,24 @@ margin:5px;cursor:pointer;font-weight:600;
 .modal .ok{background:#198754;color:white}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{transform:scale(.8)}to{transform:scale(1)}}
+  
+.screen-lock{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.6);
+z-index:10000;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+font-size:16px;
+color:#333;
+backdrop-filter:blur(2px);
+}
+  
 </style>
 </head>
 
@@ -334,6 +352,7 @@ if(!confirmation) return;
 isSubmitting=true;
 sendBtn.disabled=true;
 sendBtn.textContent="Envoi en cours…";
+lockScreen();
 
 try{
 const payload=buildPayload();
@@ -354,6 +373,7 @@ await showAlert("Erreur lors de l'envoi ❌");
 await showAlert("Erreur connexion ❌");
 }
 
+unlockScreen();
 isSubmitting=false;
 sendBtn.disabled=false;
 sendBtn.textContent="Envoyer";
@@ -402,12 +422,27 @@ nomResp.style.cursor = "not-allowed";
 nomResp.addEventListener("keydown", function(e){
 e.preventDefault();
 });
+}
+});
 
+/* Lock écran rehefa mandefa */
+function lockScreen(){
+if(document.querySelector(".screen-lock")) return;
+
+const div=document.createElement("div");
+div.className="screen-lock";
+div.innerHTML="⏳ Envoi en cours...";
+document.body.appendChild(div);
 }
 
-});
+/* Unlock écran rehefa vita */
+function unlockScreen(){
+const lock=document.querySelector(".screen-lock");
+if(lock) lock.remove();
+}
 
 </script>
 
 </body>
+
 </html>
