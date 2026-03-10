@@ -123,7 +123,7 @@ backdrop-filter:blur(2px);
 <div id="contactContainer">
 <div class="phone-group contact-item">
 <div class="phone-prefix">🇲🇬 +261</div>
-<input type="text" class="contactResp" placeholder="032 12 345 67">
+<input type="tel" inputmode="numeric" class="contactResp" placeholder="032 12 345 67">
 <button type="button" class="delete" onclick="removeContact(this)">🗑</button>
 </div>
 </div>
@@ -191,7 +191,7 @@ const div=document.createElement("div");
 div.className="phone-group contact-item";
 div.style.marginTop="8px";
 div.innerHTML=`<div class="phone-prefix">🇲🇬 +261</div>
-<input type="text" class="contactResp" placeholder="032 12 345 67">
+<input type="tel" inputmode="numeric" class="contactResp" placeholder="032 12 345 67">
 <button type="button" class="delete" onclick="removeContact(this)">🗑</button>`;
 container.appendChild(div);
 attachPhoneFormatting(div.querySelector("input"));
@@ -225,7 +225,7 @@ function addRow(){
         let cell=row.insertCell(i);
         cell.contentEditable=true;
 
-       if(i===3 || i===6){
+       if(i===6){
         cell.addEventListener("keydown",function(e){
 
         if(
