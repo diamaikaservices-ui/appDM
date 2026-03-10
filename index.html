@@ -340,6 +340,69 @@ overlay.querySelector(".cancel").onclick=()=>{overlay.remove();resolve(false);};
 let isSubmitting=false;
 const sendBtn=document.querySelector(".btn.send");
 
+function buildSummary(payload){
+
+let html = `<div style="text-align:left;font-size:13px;max-height:300px;overflow:auto">`;
+
+html += `<b>Date livraison :</b> ${payload.dateLivraison}<br><br>`;
+
+html += `<b>Responsable :</b> ${payload.nomResponsable || "-"}<br>`;
+html += `<b>Contact :</b> ${payload.contactResponsable}<br>`;
+html += `<b>Lieu récupération :</b> ${payload.lieuRecuperation}<br>`;
+html += `<b>Page Facebook :</b> ${payload.pageFacebook || "-"}<br><br>`;
+
+html += `<b>Liste des livraisons :</b><br><br>`;
+
+payload.livraisons.forEach((l,i)=>{
+html += `
+<div style="margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee">
+<b>#${i+1}</b><br>
+Client : ${l.nomClient || "-"}<br>
+Contact : ${l.contactClient}<br>
+Lieu : ${l.lieuLivraison}<br>
+Article : ${l.article || "-"}<br>
+Prix : ${l.prix} Ar<br>
+Remarque : ${l.remarque || "-"}
+</div>
+`;
+});
+
+html += `</div>`;
+
+return html;
+}
+
+function showSummary(payload){
+return new Promise(resolve=>{
+
+const overlay=document.createElement("div");
+overlay.className="modal-overlay";
+
+overlay.innerHTML=`
+<div class="modal" style="max-width:400px">
+<h4>Résumé avant envoi</h4>
+${buildSummary(payload)}
+
+<button class="confirm">Confirmer</button>
+<button class="cancel">Modifier</button>
+</div>
+`;
+
+document.body.appendChild(overlay);
+
+overlay.querySelector(".confirm").onclick=()=>{
+overlay.remove();
+resolve(true);
+};
+
+overlay.querySelector(".cancel").onclick=()=>{
+overlay.remove();
+resolve(false);
+};
+
+});
+}
+
 async function submitForm(){
 if(isSubmitting) return;
 
@@ -351,7 +414,10 @@ await showAlert("Veuillez corriger les erreurs ❌");
 return;
 }
 
-const confirmation=await showConfirm("Êtes-vous sûr de vouloir envoyer ces données ?");
+const payload=buildPayload();
+
+const confirmation=await showSummary(payload);
+
 if(!confirmation) return;
 
 isSubmitting=true;
