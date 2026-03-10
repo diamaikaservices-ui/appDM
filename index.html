@@ -170,10 +170,9 @@ backdrop-filter:blur(2px);
 const today=new Date();
 today.setDate(today.getDate()+1);
 
-const formattedDate=today.toLocaleDateString();
-// const formattedDate = today.getDate().toString().padStart(2,'0') + '/' +
-// (today.getMonth()+1).toString().padStart(2,'0') + '/' +
-// today.getFullYear();
+const formattedDate = today.getDate().toString().padStart(2,'0') + '/' +
+(today.getMonth()+1).toString().padStart(2,'0') + '/' +
+today.getFullYear();
 
 document.getElementById("tableTitle").textContent="Livraison du "+formattedDate;
 
