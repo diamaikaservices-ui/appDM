@@ -33,6 +33,10 @@ td[contenteditable]{background:#fdfdfd;font-size:16px;}
 .send{background:#0d6efd;color:white}
 .delete{background:#dc3545;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
 
+input, td[contenteditable]{
+scroll-margin-top:120px;
+}
+
 html, body {
 touch-action: manipulation;
 }
@@ -264,6 +268,7 @@ let next=row.cells[cellIndex+1];
 if(next){
 next.focus();
 }
+
 }
 
 });
@@ -274,7 +279,7 @@ cell.addEventListener("blur",()=>validateCell(cell,i));
 
 }
 
-/* Prix input format */
+/* Prix input format + numeric keyboard */
 const prixInput=row.querySelector(".prixInput");
 
 if(prixInput){
@@ -299,7 +304,15 @@ this.value=value.toLocaleString('fr-FR');
 
 }
 
-/* Action delete */
+const prixCell = row.cells[6];
+
+prixCell.addEventListener("click",()=>{
+if(prixInput){
+prixInput.focus();
+}
+});
+
+/* Bouton supprimer */
 const action=row.insertCell(8);
 
 const btn=document.createElement("button");
@@ -322,39 +335,67 @@ action.appendChild(btn);
 
 updateNumbers();
 
-/* Focus sans scroll */
-setTimeout(()=>{
-row.cells[2].focus({preventScroll:true});
-},50);
-
 }
 
 function placeCaretAtEnd(el){el.focus();const range=document.createRange();range.selectNodeContents(el);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
 function validateCell(cell,index){
-    cell.classList.remove("error-border");
-    let value=cell.textContent.trim();
 
-    if(index===3&&value==="")cell.classList.add("error-border");
-    if(index===4&&value==="")cell.classList.add("error-border");
+cell.classList.remove("error-border");
 
-    if(index===6){
-        let raw=value.replace(/\D/g,'');
-        if(raw===""){cell.classList.add("error-border");}
-        else{
-            let num=parseInt(raw);
-            if(num<0||num>1010000){cell.classList.add("error-border");}
-            else{cell.textContent=num.toLocaleString('fr-FR');}
-        }
-    }
-    // auto focus ligne suivante
-    if(index===6){
-        let row=cell.parentElement;
-        let next=row.nextElementSibling;
+let value = index===6
+? cell.querySelector("input")?.value || ""
+: cell.textContent.trim();
 
-        if(next){
-            next.cells[2].focus();
-        }
-    }
+/* Contact client obligatoire */
+if(index===3 && value===""){
+cell.classList.add("error-border");
+}
+
+/* Lieu livraison obligatoire */
+if(index===4 && value===""){
+cell.classList.add("error-border");
+}
+
+/* Validation Prix */
+if(index===6){
+
+let raw = value.replace(/\D/g,'');
+
+if(raw===""){
+cell.classList.add("error-border");
+}else{
+
+let num = parseInt(raw);
+
+if(num<0 || num>1010000){
+cell.classList.add("error-border");
+}else{
+
+let input = cell.querySelector("input");
+if(input){
+input.value = num.toLocaleString('fr-FR');
+}
+
+}
+
+}
+
+}
+
+/* Auto ligne suivante rehefa vita Prix */
+if(index===6){
+
+let row = cell.parentElement;
+let next = row.nextElementSibling;
+
+if(next){
+next.cells[2].focus();
+}else{
+addRow();
+}
+
+}
+
 }
 
 function updateNumbers(){
@@ -383,7 +424,7 @@ nomClient:row.cells[2].textContent.trim(),
 contactClient:row.cells[3].textContent.trim(),
 lieuLivraison:row.cells[4].textContent.trim(),
 article:row.cells[5].textContent.trim(),
-prix:row.cells[6].textContent.trim().replace(/\s/g,''),
+prix:row.cells[6].querySelector("input")?.value.replace(/\s/g,'') || "",
 remarque:row.cells[7].textContent.trim()
 });
 });
