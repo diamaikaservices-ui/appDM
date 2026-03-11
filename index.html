@@ -1121,7 +1121,7 @@
 
     if(response.result==="success"){
     await showAlert("Données envoyées ✅");
-    resetForm();
+    resetLivraisons();
     }else{
     await showAlert("Erreur lors de l'envoi ❌");
     }
@@ -1162,6 +1162,24 @@
     document.getElementById("pageFacebook").value="";
     window.scrollTo({top:0,behavior:"smooth"});
     location.reload();
+    }
+
+    function resetLivraisons(){
+
+    const tbody = document.querySelector("#livraisonTable tbody");
+
+    /* fafana daholo ny lignes */
+    tbody.innerHTML = "";
+
+    /* mamorona ligne vaovao */
+    addRow();
+
+    /* scroll hiverina any ambony */
+    window.scrollTo({
+    top:0,
+    behavior:"smooth"
+    });
+
     }
 
     // Ity ilay lien (Mameno formulaire direct)
