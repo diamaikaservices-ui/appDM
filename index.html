@@ -61,7 +61,7 @@ td:nth-of-type(5):before{content:"Lieu livraison (Précis)";}
 td:nth-of-type(6):before{content:"Article";}
 td:nth-of-type(7):before{content:"Prix colis + livraison (Ar)";}
 td:nth-of-type(8):before{content:"Remarque";}
-td:nth-of-type(9):before{content:"Action";}
+td:nth-of-type(9):before{content:"Supprimer la livraison";}
 .number-cell{background:transparent;text-align:left;font-weight:bold;}
 }
 
@@ -220,6 +220,37 @@ padding:7px;
 border-radius:8px;
 }
 
+.client-contact-line{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.add-icon{
+width:30px;
+height:30px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:0;
+font-size:16px;
+border-radius:8px;
+background:#198754;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.client-contact-line .delete{
+width:30px;
+height:30px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:0;
+border-radius:8px;
+}
+
 </style>
 </head>
 
@@ -242,13 +273,25 @@ border-radius:8px;
 <div class="field">
 <label>Contact du responsable *</label>
 <div id="contactContainer">
+<div id="contactContainer">
+
 <div class="phone-group contact-item">
+
 <div class="phone-prefix">🇲🇬 +261</div>
-<input type="tel" inputmode="numeric" class="contactResp" placeholder="032 12 345 67">
-<button type="button" class="delete" onclick="removeContact(this)">🗑</button>
+
+<input type="tel" inputmode="numeric"
+class="contactResp"
+placeholder="032 12 345 67">
+
+<button type="button" class="add-icon"
+onclick="addContact()">➕</button>
+
+<button type="button" class="delete"
+onclick="removeContact(this)">🗑</button>
+
 </div>
+
 </div>
-<button type="button" class="add" style="margin-top:8px;padding:8px 12px;font-size:13px" onclick="addContact()">+ Ajouter numéro</button>
 <div class="error-message" id="errContactResp"></div>
 </div>
 
@@ -280,14 +323,14 @@ border-radius:8px;
 <th>Article</th>
 <th>Prix du colis + livraison (Ar) *</th>
 <th>Remarque</th>
-<th>Action</th>
+<th>Supprimer la livraison</th>
 </tr>
 </thead>
 <tbody></tbody>
 </table>
 </div>
 
-<button class="btn add" onclick="addRow()">Ajouter une ligne</button>
+<button class="btn add" onclick="addRow()">➕ Ajouter une livraison</button>
 <button class="btn send" onclick="submitForm()">Envoyer</button>
 
 <script>
@@ -307,15 +350,37 @@ function attachPhoneFormatting(input){input.addEventListener("input",function(){
 document.querySelectorAll(".contactResp").forEach(i=>attachPhoneFormatting(i));
 
 function addContact(){
-const container=document.getElementById("contactContainer");
-const div=document.createElement("div");
-div.className="phone-group contact-item";
-div.style.marginTop="8px";
-div.innerHTML=`<div class="phone-prefix">🇲🇬 +261</div>
-<input type="tel" inputmode="numeric" class="contactResp" placeholder="032 12 345 67">
-<button type="button" class="delete" onclick="removeContact(this)">🗑</button>`;
+
+const container = document.getElementById("contactContainer");
+
+const div = document.createElement("div");
+div.className = "phone-group contact-item";
+div.style.marginTop = "8px";
+
+div.innerHTML = `
+<div class="phone-prefix">🇲🇬 +261</div>
+
+<input type="tel" inputmode="numeric"
+class="contactResp"
+placeholder="032 12 345 67">
+
+<button type="button" class="add-icon"
+onclick="addContact()">➕</button>
+
+<button type="button" class="delete"
+onclick="removeContact(this)">🗑</button>
+`;
+
 container.appendChild(div);
-attachPhoneFormatting(div.querySelector("input"));
+
+const input = div.querySelector("input");
+
+/* format automatique téléphone */
+attachPhoneFormatting(input);
+
+/* focus automatique */
+input.focus();
+
 }
 
 function removeContact(btn){
@@ -355,15 +420,20 @@ cell.innerHTML=`
 <div class="contactContainer">
 
 <div class="client-contact-line">
-<span class="phone-icon">📞</span>
-<input type="tel" inputmode="numeric" class="contactClient" placeholder="032 12 345 67">
-<button type="button" class="delete" onclick="removeClientContact(this)">🗑</button>
-</div>
 
-<button type="button" class="add add-client-contact"
-onclick="addClientContact(this)">
-➕ Ajouter numéro
-</button>
+<span class="phone-icon">📞</span>
+
+<input type="tel" inputmode="numeric"
+class="contactClient"
+placeholder="032 12 345 67">
+
+<button type="button" class="add-icon"
+onclick="addClientContact(this)">➕</button>
+
+<button type="button" class="delete"
+onclick="removeClientContact(this)">🗑</button>
+
+</div>
 
 <div class="error-message"></div>
 
@@ -394,7 +464,6 @@ if(e.key==="Tab"){
 
 e.preventDefault();
 
-/* validation avant quitter cellule */
 validateCell(this,this.cellIndex);
 
 let cellIndex=this.cellIndex;
@@ -418,6 +487,19 @@ let nextRow=row.nextElementSibling;
 
 if(nextRow){
 placeCaretAtEnd(nextRow.cells[2]);
+}else{
+
+addRow();
+
+setTimeout(()=>{
+
+let rows=document.querySelectorAll("#livraisonTable tbody tr");
+let lastRow=rows[rows.length-1];
+
+placeCaretAtEnd(lastRow.cells[2]);
+
+},50);
+
 }
 
 }
@@ -489,6 +571,11 @@ updateNumbers();
 action.appendChild(btn);
 
 updateNumbers();
+
+/* focus automatique makany @ Nom du client rehefa manindry ajout ligne */
+setTimeout(()=>{
+placeCaretAtEnd(row.cells[2]);
+},50);
 
 }
 
@@ -897,18 +984,26 @@ if(lock) lock.remove();
 // Ajout contact client
 function addClientContact(btn){
 
-const container = btn.parentElement;
+const container = btn.closest(".contactContainer");
 
 const div = document.createElement("div");
 div.className="client-contact-line";
 
 div.innerHTML=`
 <span class="phone-icon">📞</span>
-<input type="tel" inputmode="numeric" class="contactClient" placeholder="032 12 345 67">
-<button type="button" class="delete" onclick="removeClientContact(this)">🗑</button>
+
+<input type="tel" inputmode="numeric"
+class="contactClient"
+placeholder="032 12 345 67">
+
+<button type="button" class="add-icon"
+onclick="addClientContact(this)">➕</button>
+
+<button type="button" class="delete"
+onclick="removeClientContact(this)">🗑</button>
 `;
 
-container.insertBefore(div, btn);
+container.insertBefore(div, container.querySelector(".error-message"));
 
 const input = div.querySelector("input");
 attachPhoneFormatting(input);
