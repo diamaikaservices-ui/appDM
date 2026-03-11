@@ -1,1301 +1,1309 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIVRAISON DIA MAIKA</title>
-
-<style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#eef2f7,#f9fbff);margin:0;padding:15px;}
-.logo-container{text-align:center;margin-bottom:10px}
-.logo{width:140px;max-width:60%}
-.main-title{text-align:center;font-size:26px;font-weight:700;margin-bottom:20px;}
-.card{background:white;padding:18px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.08);margin-bottom:20px;}
-.field{
-margin-bottom:18px;
-}
-label{
-font-size:13px;
-font-weight:700;
-display:block;
-margin-bottom:8px;
-color:#555;
-letter-spacing:0.3px;
-}
-.phone-group{display:flex;align-items:center;margin-top:5px;gap:5px}
-.phone-prefix{background:#e9ecef;padding:10px 12px;border-radius:10px 0 0 10px;border:1px solid #ddd;font-size:14px;white-space:nowrap;}
-.phone-group input{border-radius:0 10px 10px 0;border-left:none;flex:1;}
-input{width:100%;padding:11px;border-radius:10px;border:1px solid #ddd;font-size:16px;margin-top:3px;}
-input:focus{border-color:#0d6efd;outline:none}
-.error-border{border:2px solid #dc3545 !important}
-.error-message{font-size:11px;color:#dc3545;margin-top:4px;}
-.required-note{font-size:13px;font-weight:600;color:#dc3545;margin-bottom:8px;}
-.table-container{overflow:hidden;}
-table{width:100%;border-collapse:collapse;background:white;}
-thead th{background:#0d6efd;color:white;padding:10px;font-size:13px;}
-th,td{border:1px solid #eee;padding:8px;vertical-align:top;font-size:13px;}
-#livraisonTable tbody tr{
-border-bottom:2px solid #f1f3f5;
-}
-
-#livraisonTable tbody tr:last-child{
-border-bottom:none;
-}
-td[contenteditable]{background:#fdfdfd;font-size:16px;}
-.number-cell{background:#f1f3f5;font-weight:bold;text-align:center}
-.btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;margin-top:15px;cursor:pointer;}
-.add{background:#198754;color:white}
-.send{background:#0d6efd;color:white}
-.delete{background:#dc3545;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
-
-input, td[contenteditable]{
-scroll-margin-top:120px;
-}
-
-html, body {
-touch-action: manipulation;
-}
-
-@media (max-width:768px){
-table, thead, tbody, th, td, tr {display:block;width:100%;}
-thead{display:none;}
-tr{
-background:white;
-margin-bottom:18px;
-border-radius:16px;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
-padding:12px;
-border-left:5px solid #0d6efd;
-}
-
-td{
-border:none;
-border-bottom:1px solid #f1f3f5;
-padding:12px 6px;
-padding-top:22px;
-position:relative;
-padding-left:45%;
-min-height:42px;
-}
-
-td:last-child{
-border-bottom:none;
-}
-td:before{
-position:absolute;
-left:10px;
-top:4px;
-font-weight:700;
-font-size:13px;
-color:#0d6efd;
-}
-td:nth-of-type(1):before{content:"N° :";}
-td:nth-of-type(2):before{content:"Date :";}
-td:nth-of-type(3):before{content:"Nom client :";}
-td:nth-of-type(4):before{content:"Contact client :";}
-/* CONTACT CLIENT MOBILE FIX */
-td:nth-of-type(4){
-padding-left:10px;
-padding-top:28px;
-}
-td:nth-of-type(5):before{content:"Lieu livraison (Précis) :";}
-td:nth-of-type(6):before{content:"Article :";}
-td:nth-of-type(7):before{content:"Prix colis + livraison (Ar) :";}
-td:nth-of-type(8):before{content:"Remarque :";}
-td:nth-of-type(9):before{content:" ";} /* Supprimer la livraison */
-.number-cell{background:transparent;text-align:left;font-weight:bold;}
-}
-
-/* POPUP */
-.modal-overlay{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:rgba(0,0,0,0.4);
-display:flex;align-items:center;justify-content:center;
-z-index:9999;animation:fadeIn .2s ease;
-}
-.modal{
-background:white;padding:20px;border-radius:18px;
-width:90%;max-width:350px;text-align:center;
-box-shadow:0 15px 40px rgba(0,0,0,0.2);
-animation:scaleIn .2s ease;
-}
-.modal h4{margin-top:0;margin-bottom:10px;}
-.modal p{font-size:14px;margin-bottom:20px;}
-.modal button{
-padding:10px 14px;border:none;border-radius:10px;
-margin:5px;cursor:pointer;font-weight:600;
-}
-.modal .confirm{background:#0d6efd;color:white}
-.modal .cancel{background:#6c757d;color:white}
-.modal .ok{background:#198754;color:white}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes scaleIn{from{transform:scale(.8)}to{transform:scale(1)}}
-
-/* LOCK SCREEN rehefa mandefa */
-.screen-lock{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(255,255,255,0.6);
-z-index:9000;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:600;
-font-size:16px;
-color:#333;
-backdrop-filter:blur(2px);
-}
-
-.contactContainer .phone-group{
-display:flex;
-align-items:center;
-gap:5px;
-}
-
-.contactContainer input{
-flex:1;
-}
-
-/* MOBILE */
-@media (max-width:768px){
-
-.contactContainer .phone-group{
-flex-direction:row;
-}
-
-.contactContainer .phone-prefix{
-padding:8px 10px;
-font-size:13px;
-}
-
-.contactContainer input{
-font-size:16px;
-padding:10px;
-}
-
-.contactContainer .delete{
-padding:6px 8px;
-}
-
-.contactContainer .add{
-width:100%;
-font-size:12px;
-padding:6px;
-}
-
-}
-
-.contactContainer .phone-group{
-display:flex;
-align-items:center;
-gap:6px;
-width:100%;
-}
-
-.contactContainer .phone-prefix{
-padding:8px 10px;
-font-size:13px;
-border-radius:8px 0 0 8px;
-}
-
-.contactContainer input{
-flex:1;
-font-size:16px;
-padding:10px;
-min-width:0;
-}
-
-.contactContainer .delete{
-padding:6px 8px;
-flex-shrink:0;
-}
-
-/* bouton ajouter */
-.contactContainer .add{
-width:100%;
-padding:7px;
-font-size:12px;
-border-radius:8px;
-}
-
-/* CONTACT CLIENT PRO DESIGN */
-
-.contactContainer{
-display:flex;
-flex-direction:column;
-gap:6px;
-width:100%;
-}
-
-.client-contact-line{
-display:flex;
-align-items:center;
-gap:6px;
-width:100%;
-}
-
-.phone-icon{
-font-size:16px;
-flex-shrink:0;
-}
-
-.client-contact-line input{
-flex:1;
-font-size:16px;
-padding:10px;
-border-radius:8px;
-}
-
-.client-contact-line .delete{
-padding:6px 8px;
-flex-shrink:0;
-}
-
-.add-client-contact{
-width:100%;
-font-size:12px;
-padding:7px;
-border-radius:8px;
-}
-
-.client-contact-line{
-display:flex;
-align-items:center;
-gap:6px;
-}
-
-.add-icon{
-width:30px;
-height:30px;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:0;
-font-size:16px;
-border-radius:8px;
-background:#198754;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-.client-contact-line .delete{
-width:30px;
-height:30px;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:0;
-border-radius:8px;
-}
-
-/* COMPACT DESIGN HO AN'NY SMARTPHONE KELY */
-@media (max-width:480px){
-
-body{
-padding:10px;
-}
-
-/* logo */
-.logo{
-width:110px;
-}
-
-/* titre */
-.main-title{
-font-size:20px;
-margin-bottom:12px;
-}
-
-/* carte */
-.card{
-padding:12px;
-border-radius:12px;
-margin-bottom:12px;
-}
-
-/* labels */
-label{
-font-size:12px;
-margin-bottom:5px;
-}
-
-/* inputs */
-input{
-padding:9px;
-font-size:15px;
-}
-
-/* prefix phone */
-.phone-prefix{
-padding:7px 9px;
-font-size:12px;
-}
-
-/* boutons */
-.btn{
-padding:11px;
-font-size:14px;
-margin-top:10px;
-border-radius:10px;
-}
-
-/* icones + / delete */
-.add-icon,
-.client-contact-line .delete{
-width:26px;
-height:26px;
-font-size:14px;
-}
-
-/* tableau livraison */
-tr{
-padding:9px;
-margin-bottom:12px;
-border-radius:12px;
-}
-
-/* cellules */
-td{
-padding:10px 6px;
-padding-top:20px;
-min-height:38px;
-font-size:14px;   /* lehibe kokoa */
-}
-
-/* labels dans tableau */
-td:before{
-font-size:12px;
-}
-
-/* champs client contact */
-.client-contact-line input{
-padding:8px;
-font-size:16px;
-}
-
-.prixInput{
-font-size:16px;
-}   
-
-/* notes obligatoire */
-.required-note{
-font-size:12px;
-}
-
-/* popup */
-.modal{
-padding:15px;
-}
-
-.modal h4{
-font-size:16px;
-}
-
-.modal p{
-font-size:13px;
-}
-
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="logo-container">
-<img src="logo.jpg" class="logo">
-</div>
-
-<div class="main-title">LIVRAISON DIA MAIKA</div>
-
-<div class="card">
-<h3>Pour la récupération</h3>
-
-<div class="field">
-<label>Nom du responsable</label>
-<input type="text" id="nomResp">
-</div>
-
-<div class="field">
-<label>Contact du responsable *</label>
-<div id="contactContainer">
-
-<div class="phone-group contact-item">
-
-<div class="phone-prefix">🇲🇬 +261</div>
-
-<input type="tel" inputmode="numeric"
-class="contactResp"
-placeholder="032 12 345 67">
-
-<button type="button" class="add-icon"
-onclick="addContact()">➕</button>
-
-<button type="button" class="delete"
-onclick="removeContact(this)">🗑</button>
-
-</div>
-
-</div>
-<div class="error-message" id="errContactResp"></div>
-</div>
-
-<div class="field">
-<label>Lieu de récupération *</label>
-<input type="text" id="lieuRecup">
-<div class="error-message" id="errLieuRecup"></div>
-</div>
-
-<div class="field">
-<label>Page Facebook (optionnel)</label>
-<input type="text" id="pageFacebook" placeholder=" ">
-</div>
-
-</div>
-
-<h3 id="tableTitle"></h3>
-<div class="required-note">* : Champs obligatoires</div>
-
-<div class="table-container">
-<table id="livraisonTable">
-<thead>
-<tr>
-<th>N°</th>
-<th>Date</th>
-<th>Nom du client</th>
-<th>Contact du client *</th>
-<th>Lieu de livraison (Précis) *</th>
-<th>Article</th>
-<th>Prix du colis + livraison (Ar) *</th>
-<th>Remarque</th>
-<th>Supprimer la livraison</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</div>
-
-<button class="btn add" onclick="addRow()">➕ Ajouter une livraison</button>
-<button class="btn send" onclick="submitForm()">Envoyer</button>
-
-<script>
-
-const today=new Date();
-today.setDate(today.getDate()+1);
-
-const formattedDate = today.getDate().toString().padStart(2,'0') + '/' +
-(today.getMonth()+1).toString().padStart(2,'0') + '/' +
-today.getFullYear();
-
-document.getElementById("tableTitle").textContent="Livraison du "+formattedDate;
-
-function formatPhone(value){value=value.replace(/\D/g,'');if(value.length>10)value=value.slice(0,10);return value.replace(/(\d{3})(\d{2})(\d{3})(\d{2})/,'$1 $2 $3 $4');}
-function validateSingleContact(v){return /^(032|033|034|037|038)\d{7}$/.test(v.replace(/\s/g,''));}
-function attachPhoneFormatting(input){input.addEventListener("input",function(){this.value=formatPhone(this.value);});input.addEventListener("blur",validateTopFields);}
-document.querySelectorAll(".contactResp").forEach(i=>attachPhoneFormatting(i));
-
-function addContact(){
-
-const container = document.getElementById("contactContainer");
-
-const div = document.createElement("div");
-div.className = "phone-group contact-item";
-div.style.marginTop = "8px";
-
-div.innerHTML = `
-<div class="phone-prefix">🇲🇬 +261</div>
-
-<input type="tel" inputmode="numeric"
-class="contactResp"
-placeholder="032 12 345 67">
-
-<button type="button" class="add-icon"
-onclick="addContact()">➕</button>
-
-<button type="button" class="delete"
-onclick="removeContact(this)">🗑</button>
-`;
-
-container.appendChild(div);
-
-const input = div.querySelector("input");
-
-/* format automatique téléphone */
-attachPhoneFormatting(input);
-
-/* focus automatique */
-input.focus();
-
-}
-
-function removeContact(btn){
-const container=document.getElementById("contactContainer");
-if(container.children.length===1){showAlert("Au moins un numéro est obligatoire.");return;}
-btn.parentElement.remove();validateTopFields();
-}
-
-document.getElementById("lieuRecup").addEventListener("blur",validateTopFields);
-
-function validateTopFields(){
-let valid=true;let contacts=document.querySelectorAll(".contactResp");let atLeastOne=false;
-contacts.forEach(input=>{if(validateSingleContact(input.value)){input.classList.remove("error-border");atLeastOne=true;}else{input.classList.add("error-border");}});
-if(!atLeastOne){document.getElementById("errContactResp").textContent="Au moins un numéro valide est requis";valid=false;}else{document.getElementById("errContactResp").textContent="";}
-let lieu=document.getElementById("lieuRecup");
-if(lieu.value.trim()===""){lieu.classList.add("error-border");document.getElementById("errLieuRecup").textContent="Champ obligatoire";valid=false;}
-else{lieu.classList.remove("error-border");document.getElementById("errLieuRecup").textContent="";}
-return valid;
-}
-
-function addRow(){
-
-const tbody=document.querySelector("#livraisonTable tbody");
-const row=tbody.insertRow();
-
-row.insertCell(0).className="number-cell";
-row.insertCell(1).textContent=formattedDate;
-
-for(let i=2;i<=7;i++){
-
-let cell=row.insertCell(i);
-
-/* CONTACT CLIENT */
-if(i===3){
-
-cell.innerHTML=`
-<div class="contactContainer">
-
-<div class="client-contact-line">
-
-<span class="phone-icon">📞</span>
-
-<input type="tel" inputmode="numeric"
-class="contactClient"
-placeholder="032 12 345 67">
-
-<button type="button" class="add-icon"
-onclick="addClientContact(this)">➕</button>
-
-<button type="button" class="delete"
-onclick="removeClientContact(this)">🗑</button>
-
-</div>
-
-<div class="error-message"></div>
-
-</div>
-`;
-
-const input=cell.querySelector(".contactClient");
-attachPhoneFormatting(input);
-handleTabNavigation(input);
-
-}
-
-/* PRIX */
-else if(i===6){
-
-cell.innerHTML='<input type="tel" inputmode="numeric" class="prixInput" style="width:100%;border:none;outline:none;font-size:16px">';
-
-}
-
-/* AUTRES COLONNES */
-else{
-
-cell.contentEditable=true;
-
-cell.addEventListener("keydown",function(e){
-
-if(e.key==="Tab"){
-
-e.preventDefault();
-
-validateCell(this,this.cellIndex);
-
-let cellIndex=this.cellIndex;
-let row=this.parentElement;
-
-let next=row.cells[cellIndex+1];
-
-if(next){
-
-let input=next.querySelector("input");
-
-if(input){
-input.focus();
-}else{
-placeCaretAtEnd(next);
-}
-
-}else{
-
-let nextRow=row.nextElementSibling;
-
-if(nextRow){
-placeCaretAtEnd(nextRow.cells[2]);
-}else{
-
-addRow();
-
-setTimeout(()=>{
-
-let rows=document.querySelectorAll("#livraisonTable tbody tr");
-let lastRow=rows[rows.length-1];
-
-placeCaretAtEnd(lastRow.cells[2]);
-
-},50);
-
-}
-
-}
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIVRAISON DIA MAIKA</title>
+
+    <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#eef2f7,#f9fbff);margin:0;padding:15px;}
+    .logo-container{text-align:center;margin-bottom:10px}
+    .logo{width:140px;max-width:60%}
+    .main-title{text-align:center;font-size:26px;font-weight:700;margin-bottom:20px;}
+    .card{background:white;padding:18px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.08);margin-bottom:20px;}
+    .field{
+    margin-bottom:18px;
+    }
+    label{
+    font-size:13px;
+    font-weight:700;
+    display:block;
+    margin-bottom:8px;
+    color:#555;
+    letter-spacing:0.3px;
+    }
+    .phone-group{display:flex;align-items:center;margin-top:5px;gap:5px}
+    .phone-prefix{background:#e9ecef;padding:10px 12px;border-radius:10px 0 0 10px;border:1px solid #ddd;font-size:14px;white-space:nowrap;}
+    .phone-group input{border-radius:0 10px 10px 0;border-left:none;flex:1;}
+    input{width:100%;padding:11px;border-radius:10px;border:1px solid #ddd;font-size:16px;margin-top:3px;}
+    input:focus{border-color:#0d6efd;outline:none}
+    .error-border{border:2px solid #dc3545 !important}
+    .error-message{font-size:11px;color:#dc3545;margin-top:4px;}
+    .required-note{font-size:13px;font-weight:600;color:#dc3545;margin-bottom:8px;}
+    .table-container{overflow:hidden;}
+    table{width:100%;border-collapse:collapse;background:white;}
+    thead th{background:#0d6efd;color:white;padding:10px;font-size:13px;}
+    th,td{border:1px solid #eee;padding:8px;vertical-align:top;font-size:13px;}
+    #livraisonTable tbody tr{
+    border-bottom:2px solid #f1f3f5;
+    }
+
+    #livraisonTable tbody tr:last-child{
+    border-bottom:none;
+    }
+    td[contenteditable]{background:#fdfdfd;font-size:16px;}
+    .number-cell{background:#f1f3f5;font-weight:bold;text-align:center}
+    .btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;margin-top:15px;cursor:pointer;}
+    .add{background:#198754;color:white}
+    .send{background:#0d6efd;color:white}
+    .delete{background:#dc3545;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
+
+    input, td[contenteditable]{
+    scroll-margin-top:120px;
+    }
+
+    html, body {
+    touch-action: manipulation;
+    }
+
+    @media (max-width:768px){
+    table, thead, tbody, th, td, tr {display:block;width:100%;}
+    thead{display:none;}
+    tr{
+    background:white;
+    margin-bottom:18px;
+    border-radius:16px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    padding:12px;
+    border-left:5px solid #0d6efd;
+    }
+
+    td{
+    border:none;
+    border-bottom:1px solid #f1f3f5;
+    padding:12px 6px;
+    padding-top:22px;
+    position:relative;
+    padding-left:45%;
+    min-height:42px;
+    }
+
+    /* espace fanampiny ho an'ny champ texte */
+    td:nth-of-type(3),
+    td:nth-of-type(5),
+    td:nth-of-type(6),
+    td:nth-of-type(8){
+    padding-top:28px;
+    }
+
+    td:last-child{
+    border-bottom:none;
+    }
+    td:before{
+    position:absolute;
+    left:10px;
+    top:4px;
+    font-weight:700;
+    font-size:13px;
+    color:#0d6efd;
+    }
+    td:nth-of-type(1):before{content:"N° :";}
+    td:nth-of-type(2):before{content:"Date :";}
+    td:nth-of-type(3):before{content:"Nom client :";}
+    td:nth-of-type(4):before{content:"Contact client :";}
+    /* CONTACT CLIENT MOBILE FIX */
+    td:nth-of-type(4){
+    padding-left:10px;
+    padding-top:28px;
+    }
+    td:nth-of-type(5):before{content:"Lieu livraison (Précis) :";}
+    td:nth-of-type(6):before{content:"Article :";}
+    td:nth-of-type(7):before{content:"Prix colis + livraison (Ar) :";}
+    td:nth-of-type(8):before{content:"Remarque :";}
+    td:nth-of-type(9):before{content:" ";} /* Supprimer la livraison */
+    .number-cell{background:transparent;text-align:left;font-weight:bold;}
+    }
+
+    /* POPUP */
+    .modal-overlay{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.4);
+    display:flex;align-items:center;justify-content:center;
+    z-index:9999;animation:fadeIn .2s ease;
+    }
+    .modal{
+    background:white;padding:20px;border-radius:18px;
+    width:90%;max-width:350px;text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    animation:scaleIn .2s ease;
+    }
+    .modal h4{margin-top:0;margin-bottom:10px;}
+    .modal p{font-size:14px;margin-bottom:20px;}
+    .modal button{
+    padding:10px 14px;border:none;border-radius:10px;
+    margin:5px;cursor:pointer;font-weight:600;
+    }
+    .modal .confirm{background:#0d6efd;color:white}
+    .modal .cancel{background:#6c757d;color:white}
+    .modal .ok{background:#198754;color:white}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes scaleIn{from{transform:scale(.8)}to{transform:scale(1)}}
+
+    /* LOCK SCREEN rehefa mandefa */
+    .screen-lock{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.6);
+    z-index:9000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    font-size:16px;
+    color:#333;
+    backdrop-filter:blur(2px);
+    }
+
+    .contactContainer .phone-group{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    }
+
+    .contactContainer input{
+    flex:1;
+    }
+
+    /* MOBILE */
+    @media (max-width:768px){
+
+    .contactContainer .phone-group{
+    flex-direction:row;
+    }
+
+    .contactContainer .phone-prefix{
+    padding:8px 10px;
+    font-size:13px;
+    }
+
+    .contactContainer input{
+    font-size:16px;
+    padding:10px;
+    }
+
+    .contactContainer .delete{
+    padding:6px 8px;
+    }
+
+    .contactContainer .add{
+    width:100%;
+    font-size:12px;
+    padding:6px;
+    }
+
+    }
+
+    .contactContainer .phone-group{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    }
+
+    .contactContainer .phone-prefix{
+    padding:8px 10px;
+    font-size:13px;
+    border-radius:8px 0 0 8px;
+    }
+
+    .contactContainer input{
+    flex:1;
+    font-size:16px;
+    padding:10px;
+    min-width:0;
+    }
+
+    .contactContainer .delete{
+    padding:6px 8px;
+    flex-shrink:0;
+    }
+
+    /* bouton ajouter */
+    .contactContainer .add{
+    width:100%;
+    padding:7px;
+    font-size:12px;
+    border-radius:8px;
+    }
+
+    /* CONTACT CLIENT PRO DESIGN */
+
+    .contactContainer{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    width:100%;
+    }
+
+    .client-contact-line{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    }
+
+    .phone-icon{
+    font-size:16px;
+    flex-shrink:0;
+    }
+
+    .client-contact-line input{
+    flex:1;
+    font-size:16px;
+    padding:10px;
+    border-radius:8px;
+    }
+
+    .client-contact-line .delete{
+    padding:6px 8px;
+    flex-shrink:0;
+    }
+
+    .add-client-contact{
+    width:100%;
+    font-size:12px;
+    padding:7px;
+    border-radius:8px;
+    }
+
+    .client-contact-line{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    }
+
+    .add-icon{
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    font-size:16px;
+    border-radius:8px;
+    background:#198754;
+    color:white;
+    border:none;
+    cursor:pointer;
+    }
+
+    .client-contact-line .delete{
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    border-radius:8px;
+    }
+
+    /* COMPACT DESIGN HO AN'NY SMARTPHONE KELY */
+    @media (max-width:480px){
+
+    body{
+    padding:10px;
+    }
+
+    /* logo */
+    .logo{
+    width:110px;
+    }
+
+    /* titre */
+    .main-title{
+    font-size:20px;
+    margin-bottom:12px;
+    }
+
+    /* carte */
+    .card{
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:12px;
+    }
+
+    /* labels */
+    label{
+    font-size:12px;
+    margin-bottom:5px;
+    }
+
+    /* inputs */
+    input{
+    padding:9px;
+    font-size:15px;
+    }
+
+    /* prefix phone */
+    .phone-prefix{
+    padding:7px 9px;
+    font-size:12px;
+    }
+
+    /* boutons */
+    .btn{
+    padding:11px;
+    font-size:14px;
+    margin-top:10px;
+    border-radius:10px;
+    }
+
+    /* icones + / delete */
+    .add-icon,
+    .client-contact-line .delete{
+    width:26px;
+    height:26px;
+    font-size:14px;
+    }
+
+    /* tableau livraison */
+    tr{
+    padding:9px;
+    margin-bottom:12px;
+    border-radius:12px;
+    }
+
+    /* cellules */
+    td{
+    padding:12px 6px;
+    padding-top:26px;
+    min-height:42px;
+    font-size:14px;   /* lehibe kokoa */
+    }
+
+    /* labels dans tableau */
+    td:before{
+    font-size:12px;
+    }
+
+    /* champs client contact */
+    .client-contact-line input{
+    padding:8px;
+    font-size:16px;
+    }
+
+    .prixInput{
+    font-size:16px;
+    }   
+
+    /* notes obligatoire */
+    .required-note{
+    font-size:12px;
+    }
+
+    /* popup */
+    .modal{
+    padding:15px;
+    }
+
+    .modal h4{
+    font-size:16px;
+    }
+
+    .modal p{
+    font-size:13px;
+    }
+
+    }
+
+    </style>
+    </head>
+
+    <body>
+
+    <div class="logo-container">
+    <img src="logo.jpg" class="logo">
+    </div>
+
+    <div class="main-title">LIVRAISON DIA MAIKA</div>
+
+    <div class="card">
+    <h3>Pour la récupération</h3>
+
+    <div class="field">
+    <label>Nom du responsable</label>
+    <input type="text" id="nomResp">
+    </div>
+
+    <div class="field">
+    <label>Contact du responsable *</label>
+    <div id="contactContainer">
+
+    <div class="phone-group contact-item">
+
+    <div class="phone-prefix">🇲🇬 +261</div>
+
+    <input type="tel" inputmode="numeric"
+    class="contactResp"
+    placeholder="032 12 345 67">
+
+    <button type="button" class="add-icon"
+    onclick="addContact()">➕</button>
+
+    <button type="button" class="delete"
+    onclick="removeContact(this)">🗑</button>
+
+    </div>
+
+    </div>
+    <div class="error-message" id="errContactResp"></div>
+    </div>
+
+    <div class="field">
+    <label>Lieu de récupération *</label>
+    <input type="text" id="lieuRecup">
+    <div class="error-message" id="errLieuRecup"></div>
+    </div>
+
+    <div class="field">
+    <label>Page Facebook (optionnel)</label>
+    <input type="text" id="pageFacebook" placeholder=" ">
+    </div>
+
+    </div>
+
+    <h3 id="tableTitle"></h3>
+    <div class="required-note">* : Champs obligatoires</div>
+
+    <div class="table-container">
+    <table id="livraisonTable">
+    <thead>
+    <tr>
+    <th>N°</th>
+    <th>Date</th>
+    <th>Nom du client</th>
+    <th>Contact du client *</th>
+    <th>Lieu de livraison (Précis) *</th>
+    <th>Article</th>
+    <th>Prix du colis + livraison (Ar) *</th>
+    <th>Remarque</th>
+    <th>Supprimer la livraison</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    </table>
+    </div>
+
+    <button class="btn add" onclick="addRow()">➕ Ajouter une livraison</button>
+    <button class="btn send" onclick="submitForm()">Envoyer</button>
+
+    <script>
+
+    const today=new Date();
+    today.setDate(today.getDate()+1);
+
+    const formattedDate = today.getDate().toString().padStart(2,'0') + '/' +
+    (today.getMonth()+1).toString().padStart(2,'0') + '/' +
+    today.getFullYear();
+
+    document.getElementById("tableTitle").textContent="Livraison du "+formattedDate;
+
+    function formatPhone(value){value=value.replace(/\D/g,'');if(value.length>10)value=value.slice(0,10);return value.replace(/(\d{3})(\d{2})(\d{3})(\d{2})/,'$1 $2 $3 $4');}
+    function validateSingleContact(v){return /^(032|033|034|037|038)\d{7}$/.test(v.replace(/\s/g,''));}
+    function attachPhoneFormatting(input){input.addEventListener("input",function(){this.value=formatPhone(this.value);});input.addEventListener("blur",validateTopFields);}
+    document.querySelectorAll(".contactResp").forEach(i=>attachPhoneFormatting(i));
+
+    function addContact(){
+
+    const container = document.getElementById("contactContainer");
+
+    const div = document.createElement("div");
+    div.className = "phone-group contact-item";
+    div.style.marginTop = "8px";
+
+    div.innerHTML = `
+    <div class="phone-prefix">🇲🇬 +261</div>
+
+    <input type="tel" inputmode="numeric"
+    class="contactResp"
+    placeholder="032 12 345 67">
+
+    <button type="button" class="add-icon"
+    onclick="addContact()">➕</button>
+
+    <button type="button" class="delete"
+    onclick="removeContact(this)">🗑</button>
+    `;
+
+    container.appendChild(div);
+
+    const input = div.querySelector("input");
+
+    /* format automatique téléphone */
+    attachPhoneFormatting(input);
+
+    /* focus automatique */
+    input.focus();
+
+    }
+
+    function removeContact(btn){
+    const container=document.getElementById("contactContainer");
+    if(container.children.length===1){showAlert("Au moins un numéro est obligatoire.");return;}
+    btn.parentElement.remove();validateTopFields();
+    }
+
+    document.getElementById("lieuRecup").addEventListener("blur",validateTopFields);
+
+    function validateTopFields(){
+    let valid=true;let contacts=document.querySelectorAll(".contactResp");let atLeastOne=false;
+    contacts.forEach(input=>{if(validateSingleContact(input.value)){input.classList.remove("error-border");atLeastOne=true;}else{input.classList.add("error-border");}});
+    if(!atLeastOne){document.getElementById("errContactResp").textContent="Au moins un numéro valide est requis";valid=false;}else{document.getElementById("errContactResp").textContent="";}
+    let lieu=document.getElementById("lieuRecup");
+    if(lieu.value.trim()===""){lieu.classList.add("error-border");document.getElementById("errLieuRecup").textContent="Champ obligatoire";valid=false;}
+    else{lieu.classList.remove("error-border");document.getElementById("errLieuRecup").textContent="";}
+    return valid;
+    }
+
+    function addRow(){
+
+    const tbody=document.querySelector("#livraisonTable tbody");
+    const row=tbody.insertRow();
+
+    row.insertCell(0).className="number-cell";
+    row.insertCell(1).textContent=formattedDate;
+
+    for(let i=2;i<=7;i++){
+
+    let cell=row.insertCell(i);
+
+    /* CONTACT CLIENT */
+    if(i===3){
+
+    cell.innerHTML=`
+    <div class="contactContainer">
+
+    <div class="client-contact-line">
+
+    <span class="phone-icon">📞</span>
+
+    <input type="tel" inputmode="numeric"
+    class="contactClient"
+    placeholder="032 12 345 67">
+
+    <button type="button" class="add-icon"
+    onclick="addClientContact(this)">➕</button>
+
+    <button type="button" class="delete"
+    onclick="removeClientContact(this)">🗑</button>
+
+    </div>
+
+    <div class="error-message"></div>
+
+    </div>
+    `;
+
+    const input=cell.querySelector(".contactClient");
+    attachPhoneFormatting(input);
+    handleTabNavigation(input);
+
+    }
+
+    /* PRIX */
+    else if(i===6){
+
+    cell.innerHTML='<input type="tel" inputmode="numeric" class="prixInput" style="width:100%;border:none;outline:none;font-size:16px">';
+
+    }
+
+    /* AUTRES COLONNES */
+    else{
+
+    cell.contentEditable=true;
+
+    cell.addEventListener("keydown",function(e){
+
+    if(e.key==="Tab"){
+
+    e.preventDefault();
+
+    validateCell(this,this.cellIndex);
+
+    let cellIndex=this.cellIndex;
+    let row=this.parentElement;
+
+    let next=row.cells[cellIndex+1];
+
+    if(next){
+
+    let input=next.querySelector("input");
+
+    if(input){
+    input.focus();
+    }else{
+    placeCaretAtEnd(next);
+    }
+
+    }else{
+
+    let nextRow=row.nextElementSibling;
+
+    if(nextRow){
+    placeCaretAtEnd(nextRow.cells[2]);
+    }else{
+
+    addRow();
+
+    setTimeout(()=>{
+
+    let rows=document.querySelectorAll("#livraisonTable tbody tr");
+    let lastRow=rows[rows.length-1];
+
+    placeCaretAtEnd(lastRow.cells[2]);
+
+    },50);
+
+    }
+
+    }
+
+    }
+
+    });
+
+    cell.addEventListener("blur",()=>validateCell(cell,i));
+
+    }
+
+    }
+
+    /* PRIX FORMAT */
+    const prixInput=row.querySelector(".prixInput");
+    handleTabNavigation(prixInput);
+
+    if(prixInput){
+
+    prixInput.addEventListener("input",function(){
+
+    let raw=this.value.replace(/\D/g,'');
+
+    if(raw===""){
+    this.value="";
+    return;
+    }
+
+    let value=parseInt(raw);
+
+    if(value<0)value=0;
+    if(value>1010000)value=1010000;
+
+    this.value=value.toLocaleString('fr-FR');
+
+    });
+
+    }
+
+    /* FOCUS PRIX */
+    const prixCell=row.cells[6];
+
+    prixCell.addEventListener("click",()=>{
+    if(prixInput){
+    prixInput.focus();
+    }
+    });
 
-}
+    /* BOUTON SUPPRIMER LIGNE */
+    const action=row.insertCell(8);
 
-});
+    const btn=document.createElement("button");
+    btn.innerHTML="🗑 Supprimer la Livraison";
+    btn.className="delete";
 
-cell.addEventListener("blur",()=>validateCell(cell,i));
+    btn.onclick=()=>{
 
-}
+    if(tbody.rows.length===1){
+    showAlert("Impossible de supprimer la dernière ligne.");
+    return;
+    }
 
-}
-
-/* PRIX FORMAT */
-const prixInput=row.querySelector(".prixInput");
-handleTabNavigation(prixInput);
-
-if(prixInput){
-
-prixInput.addEventListener("input",function(){
-
-let raw=this.value.replace(/\D/g,'');
-
-if(raw===""){
-this.value="";
-return;
-}
+    tbody.removeChild(row);
+    updateNumbers();
 
-let value=parseInt(raw);
+    };
 
-if(value<0)value=0;
-if(value>1010000)value=1010000;
-
-this.value=value.toLocaleString('fr-FR');
+    action.appendChild(btn);
 
-});
+    updateNumbers();
 
-}
+    /* focus automatique makany @ Nom du client rehefa manindry ajout ligne */
+    setTimeout(()=>{
 
-/* FOCUS PRIX */
-const prixCell=row.cells[6];
+    /* focus raha tsy mobile */
+    if(window.innerWidth > 768){
+    placeCaretAtEnd(row.cells[2]);
+    }
 
-prixCell.addEventListener("click",()=>{
-if(prixInput){
-prixInput.focus();
-}
-});
+    },50);
 
-/* BOUTON SUPPRIMER LIGNE */
-const action=row.insertCell(8);
+    }
 
-const btn=document.createElement("button");
-btn.innerHTML="🗑 Supprimer la Livraison";
-btn.className="delete";
+    function placeCaretAtEnd(el){el.focus();const range=document.createRange();range.selectNodeContents(el);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
 
-btn.onclick=()=>{
+    function validateCell(cell,index){
 
-if(tbody.rows.length===1){
-showAlert("Impossible de supprimer la dernière ligne.");
-return;
-}
+    cell.classList.remove("error-border");
 
-tbody.removeChild(row);
-updateNumbers();
+    let value = index===6
+    ? (cell.querySelector("input")?.value || "")
+    : cell.textContent.trim();
 
-};
+    /* CONTACT CLIENT */
+    if(index===3){
 
-action.appendChild(btn);
+    let inputs = Array.from(cell.querySelectorAll(".contactClient"));
+    let errorMsg = cell.querySelector(".error-message");
 
-updateNumbers();
+    let validCount = 0;
+    let hasError = false;
 
-/* focus automatique makany @ Nom du client rehefa manindry ajout ligne */
-setTimeout(()=>{
+    inputs.forEach(input=>{
 
-/* focus raha tsy mobile */
-if(window.innerWidth > 768){
-placeCaretAtEnd(row.cells[2]);
-}
+    let v = input.value.trim();
 
-},50);
+    /* vide */
+    if(v===""){
+    input.classList.add("error-border");
+    hasError = true;
+    return;
+    }
 
-}
+    /* numero diso */
+    if(!validateSingleContact(v)){
+    input.classList.add("error-border");
+    hasError = true;
+    }else{
+    input.classList.remove("error-border");
+    validCount++;
+    }
 
-function placeCaretAtEnd(el){el.focus();const range=document.createRange();range.selectNodeContents(el);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
+    });
 
-function validateCell(cell,index){
+    /* au moins un numero valide */
+    if(validCount===0 || hasError){
 
-cell.classList.remove("error-border");
+    cell.classList.add("error-border");
 
-let value = index===6
-? (cell.querySelector("input")?.value || "")
-: cell.textContent.trim();
+    if(errorMsg){
+    errorMsg.textContent="Au moins un numéro valide est requis";
+    }
 
-/* CONTACT CLIENT */
-if(index===3){
+    }else{
 
-let inputs = Array.from(cell.querySelectorAll(".contactClient"));
-let errorMsg = cell.querySelector(".error-message");
+    cell.classList.remove("error-border");
 
-let validCount = 0;
-let hasError = false;
+    if(errorMsg){
+    errorMsg.textContent="";
+    }
 
-inputs.forEach(input=>{
+    }
 
-let v = input.value.trim();
+    }
 
-/* vide */
-if(v===""){
-input.classList.add("error-border");
-hasError = true;
-return;
-}
+    /* LIEU LIVRAISON */
+    if(index===4){
 
-/* numero diso */
-if(!validateSingleContact(v)){
-input.classList.add("error-border");
-hasError = true;
-}else{
-input.classList.remove("error-border");
-validCount++;
-}
+    if(value===""){
+    cell.classList.add("error-border");
+    }
 
-});
+    }
 
-/* au moins un numero valide */
-if(validCount===0 || hasError){
+    /* PRIX */
+    if(index===6){
 
-cell.classList.add("error-border");
+    let raw=value.replace(/\D/g,'');
 
-if(errorMsg){
-errorMsg.textContent="Au moins un numéro valide est requis";
-}
+    if(raw===""){
+    cell.classList.add("error-border");
+    return;
+    }
 
-}else{
+    let num=parseInt(raw);
 
-cell.classList.remove("error-border");
+    if(isNaN(num) || num<0 || num>1010000){
+    cell.classList.add("error-border");
+    return;
+    }
 
-if(errorMsg){
-errorMsg.textContent="";
-}
+    /* format automatique */
+    let input=cell.querySelector("input");
 
-}
+    if(input){
+    input.value=num.toLocaleString('fr-FR');
+    }
 
-}
+    }
 
-/* LIEU LIVRAISON */
-if(index===4){
+    }
 
-if(value===""){
-cell.classList.add("error-border");
-}
+    function updateNumbers(){
+    document.querySelectorAll("#livraisonTable tbody tr").forEach((row,i)=>{row.cells[0].textContent=i+1;});
+    }
 
-}
+    function validateTable(){
 
-/* PRIX */
-if(index===6){
+    let valid=true;
 
-let raw=value.replace(/\D/g,'');
+    document.querySelectorAll("#livraisonTable tbody tr").forEach(row=>{
 
-if(raw===""){
-cell.classList.add("error-border");
-return;
-}
+    [3,4,6].forEach(i=>{
 
-let num=parseInt(raw);
+    validateCell(row.cells[i],i);
 
-if(isNaN(num) || num<0 || num>1010000){
-cell.classList.add("error-border");
-return;
-}
+    if(i===6){
 
-/* format automatique */
-let input=cell.querySelector("input");
+    let input=row.cells[6].querySelector("input");
 
-if(input){
-input.value=num.toLocaleString('fr-FR');
-}
+    if(!input || input.value.trim()===""){
+    row.cells[6].classList.add("error-border");
+    valid=false;
+    }
 
-}
+    }else{
 
-}
+    if(row.cells[i].classList.contains("error-border")){
+    valid=false;
+    }
 
-function updateNumbers(){
-document.querySelectorAll("#livraisonTable tbody tr").forEach((row,i)=>{row.cells[0].textContent=i+1;});
-}
+    }
 
-function validateTable(){
+    });
 
-let valid=true;
+    });
 
-document.querySelectorAll("#livraisonTable tbody tr").forEach(row=>{
+    return valid;
 
-[3,4,6].forEach(i=>{
+    }
 
-validateCell(row.cells[i],i);
 
-if(i===6){
+    // Makany @ erreur de saisie automatique ilay curseur
+    function focusFirstError(){
 
-let input=row.cells[6].querySelector("input");
+    /* top fields */
+    const topErrors = document.querySelector(".contactResp.error-border, #lieuRecup.error-border");
 
-if(!input || input.value.trim()===""){
-row.cells[6].classList.add("error-border");
-valid=false;
-}
+    if(topErrors){
 
-}else{
+    topErrors.scrollIntoView({behavior:"smooth", block:"center"});
 
-if(row.cells[i].classList.contains("error-border")){
-valid=false;
-}
+    setTimeout(()=>{
+    topErrors.focus();
+    },300);
 
-}
+    return;
 
-});
+    }
 
-});
+    /* CONTACT CLIENT INPUT ERROR PRIORITAIRE */
+    const clientInputError = document.querySelector(".contactClient.error-border");
 
-return valid;
+    if(clientInputError){
 
-}
+    clientInputError.scrollIntoView({behavior:"smooth", block:"center"});
 
+    setTimeout(()=>{
+    clientInputError.focus();
+    clientInputError.click();
+    },300);
 
-// Makany @ erreur de saisie automatique ilay curseur
-function focusFirstError(){
+    return;
 
-/* top fields */
-const topErrors = document.querySelector(".contactResp.error-border, #lieuRecup.error-border");
+    }
 
-if(topErrors){
+    /* autres erreurs tableau */
+    const cellError = document.querySelector("#livraisonTable td.error-border");
 
-topErrors.scrollIntoView({behavior:"smooth", block:"center"});
+    if(cellError){
 
-setTimeout(()=>{
-topErrors.focus();
-},300);
+    let input = cellError.querySelector("input");
 
-return;
+    cellError.scrollIntoView({behavior:"smooth", block:"center"});
 
-}
+    setTimeout(()=>{
 
-/* CONTACT CLIENT INPUT ERROR PRIORITAIRE */
-const clientInputError = document.querySelector(".contactClient.error-border");
+    if(input){
+    input.focus();
+    }else{
+    placeCaretAtEnd(cellError);
+    }
 
-if(clientInputError){
+    },300);
 
-clientInputError.scrollIntoView({behavior:"smooth", block:"center"});
+    }
 
-setTimeout(()=>{
-clientInputError.focus();
-clientInputError.click();
-},300);
+    }
 
-return;
+    function buildPayload(){
 
-}
+    const contacts=Array.from(document.querySelectorAll(".contactResp"))
+    .map(i=>i.value.trim())
+    .filter(v=>validateSingleContact(v));
 
-/* autres erreurs tableau */
-const cellError = document.querySelector("#livraisonTable td.error-border");
+    const rows=document.querySelectorAll("#livraisonTable tbody tr");
 
-if(cellError){
+    let livraisons=[];
 
-let input = cellError.querySelector("input");
+    rows.forEach(row=>{
 
-cellError.scrollIntoView({behavior:"smooth", block:"center"});
+    let nomClient=row.cells[2].textContent.trim();
 
-setTimeout(()=>{
+    let contacts = Array.from(row.cells[3].querySelectorAll(".contactClient"))
+    .map(i=>i.value.trim())
+    .filter(v=>validateSingleContact(v));
 
-if(input){
-input.focus();
-}else{
-placeCaretAtEnd(cellError);
-}
+    let contactClient = contacts.join(" / ");
+    let lieuLivraison=row.cells[4].textContent.trim();
+    let article=row.cells[5].textContent.trim();
+    let prix=(row.cells[6].querySelector("input")?.value || "").replace(/\s/g,'');
+    let remarque=row.cells[7].textContent.trim();
 
-},300);
+    /* Obligatoire */
+    if(contactClient==="" || lieuLivraison==="" || prix===""){
+    return;
+    }
 
-}
+    livraisons.push({
+    nomClient:nomClient,
+    contactClient:contactClient,
+    lieuLivraison:lieuLivraison,
+    article:article,
+    prix:prix,
+    remarque:remarque
+    });
 
-}
+    });
 
-function buildPayload(){
+    return {
+    dateLivraison:formattedDate,
+    nomResponsable:document.getElementById("nomResp").value.trim(),
+    contactResponsable:contacts.join(" / "),
+    lieuRecuperation:document.getElementById("lieuRecup").value.trim(),
+    pageFacebook:document.getElementById("pageFacebook").value.trim(),
+    livraisons:livraisons
+    };
 
-const contacts=Array.from(document.querySelectorAll(".contactResp"))
-.map(i=>i.value.trim())
-.filter(v=>validateSingleContact(v));
+    }
 
-const rows=document.querySelectorAll("#livraisonTable tbody tr");
+    function showAlert(message){
+    return new Promise(resolve=>{
+    const overlay=document.createElement("div");
+    overlay.className="modal-overlay";
+    overlay.innerHTML=`<div class="modal">
+    <h4>Information</h4>
+    <p>${message}</p>
+    <button class="ok">OK</button>
+    </div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelector(".ok").onclick=()=>{overlay.remove();resolve();};
+    });
+    }
 
-let livraisons=[];
+    function showConfirm(message){
+    return new Promise(resolve=>{
+    const overlay=document.createElement("div");
+    overlay.className="modal-overlay";
+    overlay.innerHTML=`<div class="modal">
+    <h4>Confirmation</h4>
+    <p>${message}</p>
+    <button class="confirm">Oui</button>
+    <button class="cancel">Annuler</button>
+    </div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelector(".confirm").onclick=()=>{overlay.remove();resolve(true);};
+    overlay.querySelector(".cancel").onclick=()=>{overlay.remove();resolve(false);};
+    });
+    }
 
-rows.forEach(row=>{
+    let isSubmitting=false;
+    const sendBtn=document.querySelector(".btn.send");
 
-let nomClient=row.cells[2].textContent.trim();
+    function buildSummary(payload){
 
-let contacts = Array.from(row.cells[3].querySelectorAll(".contactClient"))
-.map(i=>i.value.trim())
-.filter(v=>validateSingleContact(v));
+    let html = `<div style="text-align:left;font-size:13px;max-height:300px;overflow:auto">`;
 
-let contactClient = contacts.join(" / ");
-let lieuLivraison=row.cells[4].textContent.trim();
-let article=row.cells[5].textContent.trim();
-let prix=(row.cells[6].querySelector("input")?.value || "").replace(/\s/g,'');
-let remarque=row.cells[7].textContent.trim();
+    html += `<b>Date livraison :</b> ${payload.dateLivraison}<br><br>`;
 
-/* Obligatoire */
-if(contactClient==="" || lieuLivraison==="" || prix===""){
-return;
-}
+    html += `<b>Responsable :</b> ${payload.nomResponsable || "-"}<br>`;
+    html += `<b>Contact :</b> ${payload.contactResponsable}<br>`;
+    html += `<b>Lieu récupération :</b> ${payload.lieuRecuperation}<br>`;
+    html += `<b>Page Facebook :</b> ${payload.pageFacebook || "-"}<br><br>`;
 
-livraisons.push({
-nomClient:nomClient,
-contactClient:contactClient,
-lieuLivraison:lieuLivraison,
-article:article,
-prix:prix,
-remarque:remarque
-});
+    html += `<b>Liste des livraisons :</b><br><br>`;
 
-});
+    payload.livraisons.forEach((l,i)=>{
+    html += `
+    <div style="margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee">
+    <b>#${i+1}</b><br>
+    Client : ${l.nomClient || "-"}<br>
+    Contact : ${l.contactClient}<br>
+    Lieu : ${l.lieuLivraison}<br>
+    Article : ${l.article || "-"}<br>
+    Prix : ${l.prix} Ar<br>
+    Remarque : ${l.remarque || "-"}
+    </div>
+    `;
+    });
 
-return {
-dateLivraison:formattedDate,
-nomResponsable:document.getElementById("nomResp").value.trim(),
-contactResponsable:contacts.join(" / "),
-lieuRecuperation:document.getElementById("lieuRecup").value.trim(),
-pageFacebook:document.getElementById("pageFacebook").value.trim(),
-livraisons:livraisons
-};
+    html += `</div>`;
 
-}
+    return html;
+    }
 
-function showAlert(message){
-return new Promise(resolve=>{
-const overlay=document.createElement("div");
-overlay.className="modal-overlay";
-overlay.innerHTML=`<div class="modal">
-<h4>Information</h4>
-<p>${message}</p>
-<button class="ok">OK</button>
-</div>`;
-document.body.appendChild(overlay);
-overlay.querySelector(".ok").onclick=()=>{overlay.remove();resolve();};
-});
-}
+    function showSummary(payload){
+    return new Promise(resolve=>{
 
-function showConfirm(message){
-return new Promise(resolve=>{
-const overlay=document.createElement("div");
-overlay.className="modal-overlay";
-overlay.innerHTML=`<div class="modal">
-<h4>Confirmation</h4>
-<p>${message}</p>
-<button class="confirm">Oui</button>
-<button class="cancel">Annuler</button>
-</div>`;
-document.body.appendChild(overlay);
-overlay.querySelector(".confirm").onclick=()=>{overlay.remove();resolve(true);};
-overlay.querySelector(".cancel").onclick=()=>{overlay.remove();resolve(false);};
-});
-}
+    const overlay=document.createElement("div");
+    overlay.className="modal-overlay";
 
-let isSubmitting=false;
-const sendBtn=document.querySelector(".btn.send");
+    overlay.innerHTML=`
+    <div class="modal" style="max-width:400px">
+    <h4>Résumé avant envoi</h4>
+    ${buildSummary(payload)}
 
-function buildSummary(payload){
+    <button class="confirm">Confirmer</button>
+    <button class="cancel">Modifier</button>
+    </div>
+    `;
 
-let html = `<div style="text-align:left;font-size:13px;max-height:300px;overflow:auto">`;
+    document.body.appendChild(overlay);
 
-html += `<b>Date livraison :</b> ${payload.dateLivraison}<br><br>`;
+    overlay.querySelector(".confirm").onclick=()=>{
+    overlay.remove();
+    resolve(true);
+    };
 
-html += `<b>Responsable :</b> ${payload.nomResponsable || "-"}<br>`;
-html += `<b>Contact :</b> ${payload.contactResponsable}<br>`;
-html += `<b>Lieu récupération :</b> ${payload.lieuRecuperation}<br>`;
-html += `<b>Page Facebook :</b> ${payload.pageFacebook || "-"}<br><br>`;
+    overlay.querySelector(".cancel").onclick=()=>{
+    overlay.remove();
+    resolve(false);
+    };
 
-html += `<b>Liste des livraisons :</b><br><br>`;
+    });
+    }
 
-payload.livraisons.forEach((l,i)=>{
-html += `
-<div style="margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee">
-<b>#${i+1}</b><br>
-Client : ${l.nomClient || "-"}<br>
-Contact : ${l.contactClient}<br>
-Lieu : ${l.lieuLivraison}<br>
-Article : ${l.article || "-"}<br>
-Prix : ${l.prix} Ar<br>
-Remarque : ${l.remarque || "-"}
-</div>
-`;
-});
+    async function submitForm(){
+    if(isSubmitting) return;
 
-html += `</div>`;
+    let validTop=validateTopFields();
+    let validTable=validateTable();
 
-return html;
-}
+    if(!validTop||!validTable){
+    await showAlert("Veuillez corriger les erreurs ❌");
 
-function showSummary(payload){
-return new Promise(resolve=>{
+    setTimeout(()=>{
+    focusFirstError();
+    },200);
 
-const overlay=document.createElement("div");
-overlay.className="modal-overlay";
+    return;
+    }
 
-overlay.innerHTML=`
-<div class="modal" style="max-width:400px">
-<h4>Résumé avant envoi</h4>
-${buildSummary(payload)}
+    const payload=buildPayload();
 
-<button class="confirm">Confirmer</button>
-<button class="cancel">Modifier</button>
-</div>
-`;
+    const confirmation=await showSummary(payload);
 
-document.body.appendChild(overlay);
+    if(!confirmation) return;
 
-overlay.querySelector(".confirm").onclick=()=>{
-overlay.remove();
-resolve(true);
-};
+    isSubmitting=true;
+    sendBtn.disabled=true;
+    sendBtn.textContent="Envoi en cours…";
+    lockScreen();
 
-overlay.querySelector(".cancel").onclick=()=>{
-overlay.remove();
-resolve(false);
-};
+    try{
 
-});
-}
+    const res=await fetch("https://script.google.com/macros/s/AKfycbx1YQr93ppqvoyuN8kIhM-OsTw0LPAzJt24b4HPA7QNFee1cCrwZXlPHFMUrqUF7tWv/exec",
+    {method:"POST",body:JSON.stringify(payload)});
 
-async function submitForm(){
-if(isSubmitting) return;
+    const response=await res.json();
 
-let validTop=validateTopFields();
-let validTable=validateTable();
+    if(response.result==="success"){
+    await showAlert("Données envoyées ✅");
+    resetForm();
+    }else{
+    await showAlert("Erreur lors de l'envoi ❌");
+    }
 
-if(!validTop||!validTable){
-await showAlert("Veuillez corriger les erreurs ❌");
+    }catch(e){
+    await showAlert("Erreur connexion ❌");
+    }
 
-setTimeout(()=>{
-focusFirstError();
-},200);
+    isSubmitting=false;
+    sendBtn.disabled=false;
+    sendBtn.textContent="Envoyer";
+    unlockScreen();
+    }
 
-return;
-}
+    window.addEventListener("load", function(){
 
-const payload=buildPayload();
+    history.scrollRestoration = "manual";
 
-const confirmation=await showSummary(payload);
+    /* manamboatra ligne livraison voalohany */
+    addRow();
 
-if(!confirmation) return;
+    /* miandry kely dia mamerina scroll any ambony */
+    setTimeout(function(){
 
-isSubmitting=true;
-sendBtn.disabled=true;
-sendBtn.textContent="Envoi en cours…";
-lockScreen();
+    window.scrollTo({
+    top:0,
+    left:0,
+    behavior:"instant"
+    });
 
-try{
+    },200);
 
-const res=await fetch("https://script.google.com/macros/s/AKfycbx1YQr93ppqvoyuN8kIhM-OsTw0LPAzJt24b4HPA7QNFee1cCrwZXlPHFMUrqUF7tWv/exec",
-{method:"POST",body:JSON.stringify(payload)});
+    });
 
-const response=await res.json();
+    function resetForm(){
+    document.getElementById("nomResp").value="";
+    document.getElementById("lieuRecup").value="";
+    document.getElementById("pageFacebook").value="";
+    window.scrollTo({top:0,behavior:"smooth"});
+    location.reload();
+    }
 
-if(response.result==="success"){
-await showAlert("Données envoyées ✅");
-resetForm();
-}else{
-await showAlert("Erreur lors de l'envoi ❌");
-}
+    // Ity ilay lien (Mameno formulaire direct)
+    function getParam(param){
+    const params = new URLSearchParams(window.location.search);
+    return params.get(param);
+    }
 
-}catch(e){
-await showAlert("Erreur connexion ❌");
-}
+    window.addEventListener("load", function(){
 
-isSubmitting=false;
-sendBtn.disabled=false;
-sendBtn.textContent="Envoyer";
-unlockScreen();
-}
+    const nom = getParam("nom");
 
-window.addEventListener("load", function(){
+    if(nom){
+    document.getElementById("nomResp").value = decodeURIComponent(nom);
+    }
 
-history.scrollRestoration = "manual";
+    });
 
-/* manamboatra ligne livraison voalohany */
-addRow();
+    // Manakana ny fanovana ny "Nom du responsable" 
+    window.addEventListener("load", function(){
 
-/* miandry kely dia mamerina scroll any ambony */
-setTimeout(function(){
+    const nomResp = document.getElementById("nomResp");
 
-window.scrollTo({
-top:0,
-left:0,
-behavior:"instant"
-});
+    if(nomResp){
 
-},200);
+    // Atao readonly
+    nomResp.setAttribute("readonly", true);
 
-});
+    // Style mba ho hita fa tsy azo ovaina
+    nomResp.style.background = "#e9ecef";
+    nomResp.style.cursor = "not-allowed";
 
-function resetForm(){
-document.getElementById("nomResp").value="";
-document.getElementById("lieuRecup").value="";
-document.getElementById("pageFacebook").value="";
-window.scrollTo({top:0,behavior:"smooth"});
-location.reload();
-}
+    // Manakana keyboard
+    nomResp.addEventListener("keydown", function(e){
+    e.preventDefault();
+    });
+    }
+    });
 
-// Ity ilay lien (Mameno formulaire direct)
-function getParam(param){
-const params = new URLSearchParams(window.location.search);
-return params.get(param);
-}
+    /* Lock écran rehefa mandefa */
+    function lockScreen(){
+    if(document.querySelector(".screen-lock")) return;
 
-window.addEventListener("load", function(){
+    const div=document.createElement("div");
+    div.className="screen-lock";
+    div.innerHTML="⏳ Envoi en cours...";
+    document.body.appendChild(div);
+    }
 
-const nom = getParam("nom");
+    /* Unlock écran rehefa vita */  
+    function unlockScreen(){
+    const lock=document.querySelector(".screen-lock");
+    if(lock) lock.remove();
+    }
 
-if(nom){
-document.getElementById("nomResp").value = decodeURIComponent(nom);
-}
+    // Ajout contact client
+    function addClientContact(btn){
 
-});
+    const container = btn.closest(".contactContainer");
 
-// Manakana ny fanovana ny "Nom du responsable" 
-window.addEventListener("load", function(){
+    const div = document.createElement("div");
+    div.className="client-contact-line";
 
-const nomResp = document.getElementById("nomResp");
+    div.innerHTML=`
+    <span class="phone-icon">📞</span>
 
-if(nomResp){
+    <input type="tel" inputmode="numeric"
+    class="contactClient"
+    placeholder="032 12 345 67">
 
-// Atao readonly
-nomResp.setAttribute("readonly", true);
+    <button type="button" class="add-icon"
+    onclick="addClientContact(this)">➕</button>
 
-// Style mba ho hita fa tsy azo ovaina
-nomResp.style.background = "#e9ecef";
-nomResp.style.cursor = "not-allowed";
+    <button type="button" class="delete"
+    onclick="removeClientContact(this)">🗑</button>
+    `;
 
-// Manakana keyboard
-nomResp.addEventListener("keydown", function(e){
-e.preventDefault();
-});
-}
-});
+    container.insertBefore(div, container.querySelector(".error-message"));
 
-/* Lock écran rehefa mandefa */
-function lockScreen(){
-if(document.querySelector(".screen-lock")) return;
+    const input = div.querySelector("input");
+    attachPhoneFormatting(input);
+    handleTabNavigation(input);
+    input.focus();
 
-const div=document.createElement("div");
-div.className="screen-lock";
-div.innerHTML="⏳ Envoi en cours...";
-document.body.appendChild(div);
-}
+    }
 
-/* Unlock écran rehefa vita */  
-function unlockScreen(){
-const lock=document.querySelector(".screen-lock");
-if(lock) lock.remove();
-}
+    function removeClientContact(btn){
 
-// Ajout contact client
-function addClientContact(btn){
+    const container = btn.closest(".contactContainer");
 
-const container = btn.closest(".contactContainer");
+    if(container.querySelectorAll(".contactClient").length===1){
+    showAlert("Au moins un numéro est obligatoire.");
+    return;
+    }
 
-const div = document.createElement("div");
-div.className="client-contact-line";
+    btn.parentElement.remove();
 
-div.innerHTML=`
-<span class="phone-icon">📞</span>
+    }
 
-<input type="tel" inputmode="numeric"
-class="contactClient"
-placeholder="032 12 345 67">
+    function handleTabNavigation(element){
 
-<button type="button" class="add-icon"
-onclick="addClientContact(this)">➕</button>
+    element.addEventListener("keydown",function(e){
 
-<button type="button" class="delete"
-onclick="removeClientContact(this)">🗑</button>
-`;
+    if(e.key==="Tab"){
 
-container.insertBefore(div, container.querySelector(".error-message"));
+    e.preventDefault();
 
-const input = div.querySelector("input");
-attachPhoneFormatting(input);
-handleTabNavigation(input);
-input.focus();
+    let cell = element.closest("td");
+    let row = cell.parentElement;
+    let index = cell.cellIndex;
 
-}
+    validateCell(cell,index);
 
-function removeClientContact(btn){
+    let next = row.cells[index+1];
 
-const container = btn.closest(".contactContainer");
+    if(next){
 
-if(container.querySelectorAll(".contactClient").length===1){
-showAlert("Au moins un numéro est obligatoire.");
-return;
-}
+    let input = next.querySelector("input");
 
-btn.parentElement.remove();
+    if(input){
+    input.focus();
+    }else{
+    placeCaretAtEnd(next);
+    }
 
-}
+    }else{
 
-function handleTabNavigation(element){
+    let nextRow=row.nextElementSibling;
 
-element.addEventListener("keydown",function(e){
+    if(nextRow){
+    placeCaretAtEnd(nextRow.cells[2]);
+    }
 
-if(e.key==="Tab"){
+    }
 
-e.preventDefault();
+    }
 
-let cell = element.closest("td");
-let row = cell.parentElement;
-let index = cell.cellIndex;
+    });
 
-validateCell(cell,index);
+    }
 
-let next = row.cells[index+1];
+    </script>
 
-if(next){
-
-let input = next.querySelector("input");
-
-if(input){
-input.focus();
-}else{
-placeCaretAtEnd(next);
-}
-
-}else{
-
-let nextRow=row.nextElementSibling;
-
-if(nextRow){
-placeCaretAtEnd(nextRow.cells[2]);
-}
-
-}
-
-}
-
-});
-
-}
-
-</script>
-
-</body>
-</html>
+    </body>
+    </html>
