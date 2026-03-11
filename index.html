@@ -52,6 +52,11 @@ td:nth-of-type(1):before{content:"N°";}
 td:nth-of-type(2):before{content:"Date";}
 td:nth-of-type(3):before{content:"Nom client";}
 td:nth-of-type(4):before{content:"Contact client";}
+/* CONTACT CLIENT MOBILE FIX */
+td:nth-of-type(4){
+padding-left:10px;
+padding-top:28px;
+}
 td:nth-of-type(5):before{content:"Lieu livraison (Précis)";}
 td:nth-of-type(6):before{content:"Article";}
 td:nth-of-type(7):before{content:"Prix colis + livraison (Ar)";}
@@ -103,12 +108,6 @@ color:#333;
 backdrop-filter:blur(2px);
 }
 
-.contactContainer{
-display:flex;
-flex-direction:column;
-gap:6px;
-}
-
 .contactContainer .phone-group{
 display:flex;
 align-items:center;
@@ -146,6 +145,79 @@ font-size:12px;
 padding:6px;
 }
 
+}
+
+.contactContainer .phone-group{
+display:flex;
+align-items:center;
+gap:6px;
+width:100%;
+}
+
+.contactContainer .phone-prefix{
+padding:8px 10px;
+font-size:13px;
+border-radius:8px 0 0 8px;
+}
+
+.contactContainer input{
+flex:1;
+font-size:16px;
+padding:10px;
+min-width:0;
+}
+
+.contactContainer .delete{
+padding:6px 8px;
+flex-shrink:0;
+}
+
+/* bouton ajouter */
+.contactContainer .add{
+width:100%;
+padding:7px;
+font-size:12px;
+border-radius:8px;
+}
+
+/* CONTACT CLIENT PRO DESIGN */
+
+.contactContainer{
+display:flex;
+flex-direction:column;
+gap:6px;
+width:100%;
+}
+
+.client-contact-line{
+display:flex;
+align-items:center;
+gap:6px;
+width:100%;
+}
+
+.phone-icon{
+font-size:16px;
+flex-shrink:0;
+}
+
+.client-contact-line input{
+flex:1;
+font-size:16px;
+padding:10px;
+border-radius:8px;
+}
+
+.client-contact-line .delete{
+padding:6px 8px;
+flex-shrink:0;
+}
+
+.add-client-contact{
+width:100%;
+font-size:12px;
+padding:7px;
+border-radius:8px;
 }
 
 </style>
@@ -281,23 +353,27 @@ if(i===3){
 
 cell.innerHTML=`
 <div class="contactContainer">
-<div class="phone-group contact-item">
-<div class="phone-prefix">🇲🇬 +261</div>
+
+<div class="client-contact-line">
+<span class="phone-icon">📞</span>
 <input type="tel" inputmode="numeric" class="contactClient" placeholder="032 12 345 67">
 <button type="button" class="delete" onclick="removeClientContact(this)">🗑</button>
 </div>
 
-<button type="button" class="add" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="addClientContact(this)">
-+ Ajouter numéro
+<button type="button" class="add add-client-contact"
+onclick="addClientContact(this)">
+➕ Ajouter numéro
 </button>
 
 <div class="error-message"></div>
+
 </div>
 `;
 
 const input=cell.querySelector(".contactClient");
 attachPhoneFormatting(input);
 handleTabNavigation(input);
+
 }
 
 /* PRIX */
@@ -318,7 +394,7 @@ if(e.key==="Tab"){
 
 e.preventDefault();
 
-/* validation avant de quitter cellule */
+/* validation avant quitter cellule */
 validateCell(this,this.cellIndex);
 
 let cellIndex=this.cellIndex;
@@ -327,13 +403,21 @@ let row=this.parentElement;
 let next=row.cells[cellIndex+1];
 
 if(next){
-next.focus();
+
+let input=next.querySelector("input");
+
+if(input){
+input.focus();
+}else{
+placeCaretAtEnd(next);
+}
+
 }else{
 
 let nextRow=row.nextElementSibling;
 
 if(nextRow){
-nextRow.cells[2].focus();
+placeCaretAtEnd(nextRow.cells[2]);
 }
 
 }
@@ -348,9 +432,10 @@ cell.addEventListener("blur",()=>validateCell(cell,i));
 
 }
 
-/* Prix format */
+/* PRIX FORMAT */
 const prixInput=row.querySelector(".prixInput");
 handleTabNavigation(prixInput);
+
 if(prixInput){
 
 prixInput.addEventListener("input",function(){
@@ -373,7 +458,7 @@ this.value=value.toLocaleString('fr-FR');
 
 }
 
-/* Focus prix */
+/* FOCUS PRIX */
 const prixCell=row.cells[6];
 
 prixCell.addEventListener("click",()=>{
@@ -382,7 +467,7 @@ prixInput.focus();
 }
 });
 
-/* Bouton supprimer ligne */
+/* BOUTON SUPPRIMER LIGNE */
 const action=row.insertCell(8);
 
 const btn=document.createElement("button");
@@ -723,7 +808,6 @@ sendBtn.textContent="Envoi en cours…";
 lockScreen();
 
 try{
-const payload=buildPayload();
 
 const res=await fetch("https://script.google.com/macros/s/AKfycbx1YQr93ppqvoyuN8kIhM-OsTw0LPAzJt24b4HPA7QNFee1cCrwZXlPHFMUrqUF7tWv/exec",
 {method:"POST",body:JSON.stringify(payload)});
@@ -753,6 +837,7 @@ function resetForm(){
 document.getElementById("nomResp").value="";
 document.getElementById("lieuRecup").value="";
 document.getElementById("pageFacebook").value="";
+window.scrollTo({top:0,behavior:"smooth"});
 location.reload();
 }
 
@@ -815,20 +900,20 @@ function addClientContact(btn){
 const container = btn.parentElement;
 
 const div = document.createElement("div");
-div.className="phone-group contact-item";
-div.style.marginTop="6px";
+div.className="client-contact-line";
 
 div.innerHTML=`
-<div class="phone-prefix">🇲🇬 +261</div>
+<span class="phone-icon">📞</span>
 <input type="tel" inputmode="numeric" class="contactClient" placeholder="032 12 345 67">
 <button type="button" class="delete" onclick="removeClientContact(this)">🗑</button>
 `;
 
 container.insertBefore(div, btn);
 
-const newInput = div.querySelector("input");
-attachPhoneFormatting(newInput);
-newInput.focus();
+const input = div.querySelector("input");
+attachPhoneFormatting(input);
+handleTabNavigation(input);
+input.focus();
 
 }
 
