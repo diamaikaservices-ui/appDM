@@ -103,6 +103,51 @@ color:#333;
 backdrop-filter:blur(2px);
 }
 
+.contactContainer{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.contactContainer .phone-group{
+display:flex;
+align-items:center;
+gap:5px;
+}
+
+.contactContainer input{
+flex:1;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+.contactContainer .phone-group{
+flex-direction:row;
+}
+
+.contactContainer .phone-prefix{
+padding:8px 10px;
+font-size:13px;
+}
+
+.contactContainer input{
+font-size:16px;
+padding:10px;
+}
+
+.contactContainer .delete{
+padding:6px 8px;
+}
+
+.contactContainer .add{
+width:100%;
+font-size:12px;
+padding:6px;
+}
+
+}
+
 </style>
 </head>
 
@@ -231,42 +276,66 @@ for(let i=2;i<=7;i++){
 
 let cell=row.insertCell(i);
 
-if(i===6){
+/* CONTACT CLIENT */
+if(i===3){
+
+cell.innerHTML=`
+<div class="contactContainer">
+<div class="phone-group contact-item">
+<div class="phone-prefix">🇲🇬 +261</div>
+<input type="tel" inputmode="numeric" class="contactClient" placeholder="032 12 345 67">
+<button type="button" class="delete" onclick="removeClientContact(this)">🗑</button>
+</div>
+
+<button type="button" class="add" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="addClientContact(this)">
++ Ajouter numéro
+</button>
+
+<div class="error-message"></div>
+</div>
+`;
+
+const input=cell.querySelector(".contactClient");
+attachPhoneFormatting(input);
+handleTabNavigation(input);
+}
+
+/* PRIX */
+else if(i===6){
 
 cell.innerHTML='<input type="tel" inputmode="numeric" class="prixInput" style="width:100%;border:none;outline:none;font-size:16px">';
 
-}else{
+}
+
+/* AUTRES COLONNES */
+else{
 
 cell.contentEditable=true;
 
 cell.addEventListener("keydown",function(e){
 
-if(e.key==="Enter"){
-e.preventDefault();
-
-let row=this.parentElement;
-let next=row.nextElementSibling;
-
-if(next){
-next.cells[2].focus();
-}else{
-addRow();
-setTimeout(()=>{
-let rows=document.querySelectorAll("#livraisonTable tbody tr");
-rows[rows.length-1].cells[2].focus();
-},100);
-}
-}
-
 if(e.key==="Tab"){
+
 e.preventDefault();
+
+/* validation avant de quitter cellule */
+validateCell(this,this.cellIndex);
 
 let cellIndex=this.cellIndex;
 let row=this.parentElement;
+
 let next=row.cells[cellIndex+1];
 
 if(next){
 next.focus();
+}else{
+
+let nextRow=row.nextElementSibling;
+
+if(nextRow){
+nextRow.cells[2].focus();
+}
+
 }
 
 }
@@ -279,9 +348,9 @@ cell.addEventListener("blur",()=>validateCell(cell,i));
 
 }
 
-/* Prix input format + numeric keyboard */
+/* Prix format */
 const prixInput=row.querySelector(".prixInput");
-
+handleTabNavigation(prixInput);
 if(prixInput){
 
 prixInput.addEventListener("input",function(){
@@ -295,8 +364,8 @@ return;
 
 let value=parseInt(raw);
 
-if(value<0) value=0;
-if(value>1010000) value=1010000;
+if(value<0)value=0;
+if(value>1010000)value=1010000;
 
 this.value=value.toLocaleString('fr-FR');
 
@@ -304,7 +373,8 @@ this.value=value.toLocaleString('fr-FR');
 
 }
 
-const prixCell = row.cells[6];
+/* Focus prix */
+const prixCell=row.cells[6];
 
 prixCell.addEventListener("click",()=>{
 if(prixInput){
@@ -312,7 +382,7 @@ prixInput.focus();
 }
 });
 
-/* Bouton supprimer */
+/* Bouton supprimer ligne */
 const action=row.insertCell(8);
 
 const btn=document.createElement("button");
@@ -349,8 +419,15 @@ let value = index===6
 
 /* Contact client obligatoire */
 if(index===3){
-if(value===""){
+
+let contacts = Array.from(cell.querySelectorAll(".contactClient"))
+.map(i=>i.value.trim())
+.filter(v=>validateSingleContact(v));
+
+if(contacts.length===0){
 cell.classList.add("error-border");
+}else{
+cell.classList.remove("error-border");
 }
 }
 
@@ -484,7 +561,12 @@ let livraisons=[];
 rows.forEach(row=>{
 
 let nomClient=row.cells[2].textContent.trim();
-let contactClient=row.cells[3].textContent.trim();
+
+let contacts = Array.from(row.cells[3].querySelectorAll(".contactClient"))
+.map(i=>i.value.trim())
+.filter(v=>validateSingleContact(v));
+
+let contactClient = contacts.join(" / ");
 let lieuLivraison=row.cells[4].textContent.trim();
 let article=row.cells[5].textContent.trim();
 let prix=(row.cells[6].querySelector("input")?.value || "").replace(/\s/g,'');
@@ -725,6 +807,84 @@ document.body.appendChild(div);
 function unlockScreen(){
 const lock=document.querySelector(".screen-lock");
 if(lock) lock.remove();
+}
+
+// Ajout contact client
+function addClientContact(btn){
+
+const container = btn.parentElement;
+
+const div = document.createElement("div");
+div.className="phone-group contact-item";
+div.style.marginTop="6px";
+
+div.innerHTML=`
+<div class="phone-prefix">🇲🇬 +261</div>
+<input type="tel" inputmode="numeric" class="contactClient" placeholder="032 12 345 67">
+<button type="button" class="delete" onclick="removeClientContact(this)">🗑</button>
+`;
+
+container.insertBefore(div, btn);
+
+const newInput = div.querySelector("input");
+attachPhoneFormatting(newInput);
+newInput.focus();
+
+}
+
+function removeClientContact(btn){
+
+const container = btn.closest(".contactContainer");
+
+if(container.querySelectorAll(".contactClient").length===1){
+showAlert("Au moins un numéro est obligatoire.");
+return;
+}
+
+btn.parentElement.remove();
+
+}
+
+function handleTabNavigation(element){
+
+element.addEventListener("keydown",function(e){
+
+if(e.key==="Tab"){
+
+e.preventDefault();
+
+let cell = element.closest("td");
+let row = cell.parentElement;
+let index = cell.cellIndex;
+
+validateCell(cell,index);
+
+let next = row.cells[index+1];
+
+if(next){
+
+let input = next.querySelector("input");
+
+if(input){
+input.focus();
+}else{
+placeCaretAtEnd(next);
+}
+
+}else{
+
+let nextRow=row.nextElementSibling;
+
+if(nextRow){
+placeCaretAtEnd(nextRow.cells[2]);
+}
+
+}
+
+}
+
+});
+
 }
 
 </script>
